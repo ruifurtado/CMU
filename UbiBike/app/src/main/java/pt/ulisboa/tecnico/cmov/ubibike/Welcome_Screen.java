@@ -22,7 +22,17 @@ public class Welcome_Screen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent goSign_In = new Intent(v.getContext(), Sign_In.class);
-                startActivityForResult(goSign_In, 0); //start new activity and excepts a result
+                startActivity(goSign_In); //start new activity and excepts a result
+            }
+        });
+
+        Button sign_up=(Button)findViewById(R.id.sign_up);
+        assert sign_up != null;
+        sign_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goSign_Up = new Intent(v.getContext(), Sign_Up.class);
+                startActivity(goSign_Up); //start new activity and excepts a result
             }
         });
     }

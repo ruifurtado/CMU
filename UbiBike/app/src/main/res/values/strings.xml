@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">UbiBike</string>
+    <string name="title_activity_sign__up">Sign_Up</string>
 </resources>
