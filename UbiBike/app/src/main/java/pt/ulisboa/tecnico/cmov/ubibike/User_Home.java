@@ -16,11 +16,13 @@ public class User_Home extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user__home);
 
+        //To get the intent, extract the username that perform the login operation and display it on the textView
         Intent data = getIntent();
         String username = data.getStringExtra("Username");
         TextView username_presentation = (TextView) findViewById(R.id.username_presentation);
         username_presentation.setText(username);
 
+        //Button to go to Send Points activity
         Button send_points=(Button)findViewById(R.id.send_points);
         assert send_points != null;
         send_points.setOnClickListener(new View.OnClickListener() {

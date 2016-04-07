@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 
 public class Search_User extends AppCompatActivity {
@@ -22,18 +21,17 @@ public class Search_User extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
 
-        // List Code Here
+        // List and Adapter Code Here
         items = new ArrayList<>();
         itemsUsernames = (ListView) findViewById(R.id.list_recentlyUsed);
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         itemsUsernames.setAdapter(itemsAdapter);
-        //Code to allow the reading from the server
-        //readItems();
-        itemsAdapter.insert("Vasco",0);
+
+        //Code to allow the reading from the coordinates to check the users near to me
+        itemsAdapter.insert("Vasco",0); //Static user for test propose
 
         // Method to Select a users from the List and return
         setupListViewListener();
-
     }
 
     //Code of the method to allow the removing items from the list
@@ -42,6 +40,7 @@ public class Search_User extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
 
+                //Save the selected username and returned to the Send Points activity
                 String username = (String) adapter.getItemAtPosition(pos);
                 Intent search_result = new Intent();
                 search_result.putExtra("Username", username);

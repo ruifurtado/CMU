@@ -21,6 +21,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/points2"
+        android:layout_alignBaseline="@+id/points"
+        android:layout_alignBottom="@+id/points"
+        android:layout_toEndOf="@+id/points"
+        android:textColor="#050404" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Points received: "
         android:id="@+id/points_received"
@@ -31,12 +41,32 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/points_received2"
+        android:layout_alignBaseline="@+id/points_received"
+        android:layout_alignBottom="@+id/points_received"
+        android:layout_toEndOf="@+id/points_received"
+        android:textColor="#050404" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Points Sent: "
         android:id="@+id/points_sent"
         android:layout_marginTop="65dp"
         android:layout_below="@+id/points"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/points_sent2"
+        android:layout_alignBaseline="@+id/points_sent"
+        android:layout_alignBottom="@+id/points_sent"
+        android:layout_toEndOf="@+id/points_sent"
+        android:textColor="#050404" />
 
     <TextView
         android:layout_width="wrap_content"
