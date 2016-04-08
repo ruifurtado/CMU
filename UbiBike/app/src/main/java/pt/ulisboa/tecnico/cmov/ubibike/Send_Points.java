@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ public class Send_Points extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_send__points);
 
         //IMPORTANT: The App have to communicate with the server to check all the data related to this user, that is need in this activity
@@ -67,10 +69,9 @@ public class Send_Points extends AppCompatActivity {
 
         //cycle to check if it's a result from the Search User activity
         if (resultCode == RESULT_OK && requestCode==0) {
-            String user = data.getStringExtra("Username");
 
             //Display the selected username on the textView available
-            username.setText(user);
+            username.setText(data.getStringExtra("Username"));
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class User_Home extends AppCompatActivity {
 
@@ -15,6 +16,9 @@ public class User_Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user__home);
+
+        //Feedback positive for the login
+        Toast.makeText(this, "Login Correct", Toast.LENGTH_SHORT).show();
 
         //To get the intent, extract the username that perform the login operation and display it on the textView
         Intent data = getIntent();
@@ -33,7 +37,26 @@ public class User_Home extends AppCompatActivity {
             }
         });
 
+        //Button to go to Trajectories activity
+        Button go_trajectories=(Button)findViewById(R.id.trajectory);
+        assert go_trajectories != null;
+        go_trajectories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goTrajectories = new Intent(v.getContext(), Trajectories.class);
+                startActivity(goTrajectories);
+            }
+        });
+
+        //Button to go to Stations activity
+        Button go_Stations=(Button)findViewById(R.id.booking_bike);
+        assert go_Stations != null;
+        go_Stations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goStations = new Intent(v.getContext(), Stations.class);
+                startActivity(goStations);
+            }
+        });
     }
-
-
 }

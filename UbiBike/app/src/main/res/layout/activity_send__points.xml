@@ -111,18 +111,19 @@
         android:layout_height="wrap_content"
         android:text="Search"
         android:id="@+id/search"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/username_toSent2"
-        android:layout_alignEnd="@+id/points_received" />
+        android:layout_marginTop="62dp"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@+id/username_toSent"
+         />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send"
         android:id="@+id/send"
-        android:layout_toEndOf="@+id/points_toSent2"
-        android:layout_marginStart="44dp"
-        android:layout_alignTop="@+id/search" />
+        android:layout_alignTop="@+id/search"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="42dp" />
 
 
 </RelativeLayout>
