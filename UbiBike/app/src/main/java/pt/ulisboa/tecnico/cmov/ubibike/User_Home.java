@@ -58,5 +58,15 @@ public class User_Home extends AppCompatActivity {
                 startActivity(goStations);
             }
         });
+
+        Button go_Messages=(Button)findViewById(R.id.send_message);
+        assert go_Messages != null;
+        go_Messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goMessages = new Intent(v.getContext(), Message_Home.class);
+                startActivity(goMessages);
+            }
+        });
     }
 }

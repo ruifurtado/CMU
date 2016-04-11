@@ -68,15 +68,18 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"
-             />
+            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".GoogleMaps_Station"
             android:label="UbiBike"
-            android:theme="@style/AppTheme"
-           />
-
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Message_Home"
+            android:label="UbiBike"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".Message_Chat" android:label="UbiBike"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
