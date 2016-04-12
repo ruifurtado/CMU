@@ -60,6 +60,7 @@ public class Send_Points extends AppCompatActivity {
                     Toast.makeText(Send_Points.this, "Write a valid amount of points", Toast.LENGTH_SHORT).show();
                 }
                 points_sent.setText(""+point);
+                Toast.makeText(Send_Points.this, "Points Successfully Sent!", Toast.LENGTH_SHORT).show();
                 //IMPORTANT: We have to update the total of points of the user and communicate to the server to update all data of the 2 users, total points, points sent and received
             }
         });
