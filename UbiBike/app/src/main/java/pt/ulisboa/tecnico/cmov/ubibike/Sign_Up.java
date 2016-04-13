@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Sign_Up extends AppCompatActivity {
+
     private String username;
     private String mail;
     private String password;

@@ -1,11 +1,9 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
-
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,7 +26,6 @@ public class GoogleMaps_Station extends FragmentActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
     }
 
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -38,17 +35,16 @@ public class GoogleMaps_Station extends FragmentActivity implements OnMapReadyCa
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Intent intent = getIntent();
-
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker in the station and move the camera
         LatLng location = new LatLng(intent.getDoubleExtra("lat",0), intent.getDoubleExtra("long",0));
         float zoomLevel = 14; //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
-
         mMap.addMarker(new MarkerOptions().position(location).title("Marker in "+intent.getStringExtra("location")));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }

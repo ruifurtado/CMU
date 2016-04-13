@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +16,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Sign_In extends AppCompatActivity {
+
     private Socket client;
     private PrintWriter printwriter;
     private String message;
@@ -51,7 +51,7 @@ public class Sign_In extends AppCompatActivity {
                 password_input.setText("");
 
                 //Code to ask to the server if the login input is correct and valid
-                //boolean result=//IMPORTANT: In this part of the code, the APP have to communicate with the server to check the input data of the login
+                //IMPORTANT: In this part of the code, the APP have to communicate with the server to check the input data of the login
                 messageFromServer=communicateWithServer();
                 if(messageFromServer.equals("1")){
                     feedBackSignUp("Login Successfully");
@@ -109,5 +109,4 @@ public class Sign_In extends AppCompatActivity {
     protected void feedBackSignUp(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 }

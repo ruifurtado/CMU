@@ -42,7 +42,6 @@ public class Message_Home extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
-
                 Intent myIntent = new Intent(item.getContext(), Message_Chat.class);
                 String user=(String) adapter.getItemAtPosition(pos);
                 myIntent.putExtra("Username", user );

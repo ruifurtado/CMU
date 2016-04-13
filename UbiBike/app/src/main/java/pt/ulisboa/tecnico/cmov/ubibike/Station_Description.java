@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Station_Description extends AppCompatActivity {
+
     private int bikes_nr;
     private TextView bikes;
 
@@ -28,6 +29,7 @@ public class Station_Description extends AppCompatActivity {
 
         bikes = (TextView) findViewById(R.id.bikes_front);
         bikes.setText(intent.getStringExtra("bikes"));
+
         //Static value only for test proposes
         String nrBikes=intent.getStringExtra("bikes");
         bikes_nr=Integer.parseInt(nrBikes);

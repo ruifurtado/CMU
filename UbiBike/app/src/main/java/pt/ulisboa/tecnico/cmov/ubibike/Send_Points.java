@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Send_Points extends AppCompatActivity {
+
     private TextView username;
     private TextView points_sent;
 

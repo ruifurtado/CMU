@@ -37,28 +37,33 @@ public class Message_Chat extends AppCompatActivity {
         friend.setText(friendName);
         itemsList = (ListView) findViewById(R.id.messagesContainer);
 
+        //read the file related with this user, and load the respective messages
         readItems(friendName);
+
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, msgList);    //inicializa sempre o Adapter com os antigos valores
         itemsList.setAdapter(itemsAdapter);
+
         Button sendMsg = (Button) findViewById(R.id.chatSendButton);
         assert sendMsg != null;
-
         sendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText newItem = (EditText) findViewById(R.id.messageEdit);
                 String msg = newItem.getText().toString();
+
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = df.format(c.getTime());
                 String newMsg=formattedDate + ": " + msg;
                 itemsAdapter.insert(newMsg,0);
+
+                //write the new message on the file related with this user
                 writeItems(friendName);
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); //Para fazer hide ao keyboard apos escrita
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); //Hide the Keyboard after send a messgae
                 imm.hideSoftInputFromWindow(newItem.getWindowToken(), 0);
-                newItem.getText().clear(); //para apagar o texto que fica no edit text quando se escreve
+                newItem.getText().clear(); //CLean the text on the editText
             }
         });
-
     }
 
     //Code to persists items to a file (read and write to a file)
@@ -72,6 +77,7 @@ public class Message_Chat extends AppCompatActivity {
         }
     }
 
+    //Code to persists items to a file (read and write to a file)
     private void writeItems(String filename) {
         File filesDir = getFilesDir();
         File file = new File(filesDir, filename+".txt");

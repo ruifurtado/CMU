@@ -9,10 +9,9 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 
-public class Search_UserToSendMessage extends AppCompatActivity {
+public class Search_User extends AppCompatActivity {
 
     private ListView itemsUsernames;
     private ArrayAdapter<String> itemsAdapter;
@@ -22,7 +21,7 @@ public class Search_UserToSendMessage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_search_user);
+        setContentView(R.layout.activity_search__user);
 
         // List and Adapter Code Here
         items = new ArrayList<>();

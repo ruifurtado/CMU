@@ -18,7 +18,6 @@ public class User_Home extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user__home);
 
-
         //To get the intent, extract the username that perform the login operation and display it on the textView
         Intent data = getIntent();
         String username = data.getStringExtra("Username");
