@@ -73,6 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/input_password"
+        android:inputType="textPassword"
         android:layout_alignBaseline="@+id/password"
         android:layout_alignBottom="@+id/password"
         android:layout_toEndOf="@+id/password" />

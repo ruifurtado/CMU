@@ -9,9 +9,10 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 
-public class Search_User extends AppCompatActivity {
+public class Search_UserToSendMessage extends AppCompatActivity {
 
     private ListView itemsUsernames;
     private ArrayAdapter<String> itemsAdapter;

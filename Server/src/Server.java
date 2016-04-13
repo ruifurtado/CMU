@@ -30,18 +30,31 @@ public class Server {
                 bufferedReader = new BufferedReader(inputStreamReader); //get the client message
                 message = bufferedReader.readLine();
                 String [] array = message.split(" ");
-                System.out.println("Method: "+array[0]+" Username: "+array[1]+" Email: "+array[2]+" Password: "+array[3]);
                 inputStreamReader.close();
                 clientSocket.close();
-                User user = new User(array[1],array[2],array[3]);
                 switch(array[0]){
                     case "Sign_Up":
+                        System.out.println("Method: "+array[0]+" Username: "+array[1]+" Email: "+array[2]+" Password: "+array[3]);
+                        User user = new User(array[1],array[2],array[3]);
                     	if(!structure.containsKey(array[1])){
                     		structure.put(array[1], user);
                     		sendMessageToClient("Sign Up Successfully");
                     	}
                     	else
                     		sendMessageToClient("Username Already on use! Try another!");
+                    break;
+                    case "Sign_In":
+                        System.out.println("Method: "+array[0]+" Username: "+array[1]+" Password: "+array[2]);
+                    	if(structure.containsKey(array[1])){
+                    		if(structure.get(array[1]).getPassword().equals(array[2])){
+                    			sendMessageToClient("1");
+                    		}
+                    		else
+                        		sendMessageToClient("Invalid Password!");
+                    	}
+                    	else
+                    		sendMessageToClient("User doesn't exist!");
+                	break;
                 }
             } catch (IOException ex) {
             	ex.printStackTrace();

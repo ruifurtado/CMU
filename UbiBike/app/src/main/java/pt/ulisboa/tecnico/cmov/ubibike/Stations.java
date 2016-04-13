@@ -27,7 +27,7 @@ public class Stations extends AppCompatActivity {
         adapterReservations = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         itemsReservations.setAdapter(adapterReservations);
 
-        //Code to allow the reading from the server of all available reservations
+        //Code to allow the reading from the server of all available reservations or neer me?
         adapterReservations.insert("Cascais", 0);
 
         //IMPORTANT: When we click on the update button, the app have to communicate with the server to check all available reservations

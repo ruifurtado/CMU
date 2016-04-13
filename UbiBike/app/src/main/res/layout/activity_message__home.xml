@@ -37,25 +37,16 @@
         android:text="Search Friends"
         android:id="@+id/searchButton"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="clean messages"
-        android:id="@+id/cleanMsg"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/messagesContainer" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/checkMsg"
-        android:checked="false"
-        android:visibility="invisible"
-        android:layout_alignTop="@+id/messagesContainer"
-        android:layout_alignStart="@+id/cleanMsg"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="10px" />
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:text="Check all available Friends"
+    android:id="@+id/textView"
+        android:layout_above="@+id/searchButton"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

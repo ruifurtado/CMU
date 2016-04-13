@@ -9,6 +9,8 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -78,9 +80,14 @@
         <activity
             android:name=".Message_Home"
             android:label="UbiBike"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".Message_Chat" android:label="UbiBike"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Message_Chat"
+            android:label="UbiBike"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Search_UserToSendMessage"
+            android:label="UbiBike"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

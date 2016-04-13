@@ -7,9 +7,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+import java.io.File;
 
 public class User_Home extends AppCompatActivity {
+    private String[] SavedFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +18,6 @@ public class User_Home extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user__home);
 
-        //Feedback positive for the login
-        Toast.makeText(this, "Login Correct", Toast.LENGTH_SHORT).show();
 
         //To get the intent, extract the username that perform the login operation and display it on the textView
         Intent data = getIntent();
@@ -68,5 +67,19 @@ public class User_Home extends AppCompatActivity {
                 startActivity(goMessages);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SavedFiles = getApplicationContext().fileList();
+        File dir = getFilesDir();
+        for(int i=0;i<SavedFiles.length;i++) {
+            File file = new File(dir, SavedFiles[i]);
+            file.delete();
+        }
+        Intent logout = new Intent(getApplicationContext(),Welcome_Screen.class);
+        logout.putExtra("Logout", "Logout");
+        startActivity(logout);
     }
 }

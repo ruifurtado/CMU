@@ -29,14 +29,20 @@ public class Welcome_Screen extends AppCompatActivity {
     private String messageFromServer;
     private Thread t;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome__screen);
+
+        Intent intent = getIntent();
+        try {
+            if(intent.getExtras()!=null) {
+                Bundle extras=intent.getExtras();
+                if(extras.containsKey("Logout"))
+                    Toast.makeText(this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+            }
+        }catch(NullPointerException e){}
 
         //Button to go to Sign In activity
         Button sign_in=(Button)findViewById(R.id.sign_in);
@@ -62,14 +68,13 @@ public class Welcome_Screen extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         //cycle to check if it's a result from the Sign Up activity
         if (resultCode == RESULT_OK && requestCode==0) {
             username = data.getStringExtra("Username");
             email = data.getStringExtra("Email");
             password = data.getStringExtra("Password");
             //IMPORTANT: In this part of the code, the APP have to communicate with the server to pass the new user, with all the data received
-            String registerResult=CommunicateWithServer();
+            String registerResult=communicateWithServer();
             Toast.makeText(this, registerResult, Toast.LENGTH_SHORT).show();
         }
     }
@@ -101,7 +106,7 @@ public class Welcome_Screen extends AppCompatActivity {
         }
     };
 
-    protected String CommunicateWithServer (){
+    protected String communicateWithServer (){
         t=new Thread(server, "My Server");
         t.start();
         try {
