@@ -10,10 +10,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 public class Send_Points extends AppCompatActivity {
 
-    private TextView username;
+    private TextView usernameTextView;
     private TextView points_sent;
+    private String username;
+    private Socket client;
+    private PrintWriter printwriter;
+    private String message;
+    private String serverIp="10.0.2.2";
+    private String messageFromServer;
+    private Thread t;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,15 +36,14 @@ public class Send_Points extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_send__points);
 
-        //IMPORTANT: The App have to communicate with the server to check all the data related to this user, that is need in this activity
+        username=getIntent().getStringExtra("Username");
 
         //To display the selected username that will received some points
-        username= (TextView) findViewById(R.id.username_toSent2);
-        username.setText("");
+        usernameTextView= (TextView) findViewById(R.id.username_toSent2);
+        usernameTextView.setText("");
 
-        //To display the total amount of points that the user sent to friends
-        points_sent= (TextView) findViewById(R.id.points_sent2);
-        points_sent.setText("0"); //Static value only for test proposes
+        //update all text views about points
+        updateAllTextViews();
 
         //Button to go to Search User activity and expects a returned username
         Button search_user=(Button)findViewById(R.id.search);
@@ -52,17 +66,18 @@ public class Send_Points extends AppCompatActivity {
                 //Write the points the will be send and after a click, update the amount of points send
                 EditText points_toSend = (EditText) findViewById(R.id.points_toSent2);
                 String points = points_toSend.getText().toString();
-                points_toSend.setText("");
-                username.setText("");
                 Integer point = 0;
                 try {
-                    point = Integer.parseInt(points_sent.getText().toString()) + Integer.parseInt(points);
+                    point = Integer.parseInt(points);
+                    message="Send_Points"+" "+username+ " "+points+" "+usernameTextView.getText();
+                    CommunicateWithServer();
+                    Toast.makeText(Send_Points.this, messageFromServer, Toast.LENGTH_SHORT).show();
                 } catch(NumberFormatException e) {
                     Toast.makeText(Send_Points.this, "Write a valid amount of points", Toast.LENGTH_SHORT).show();
                 }
-                points_sent.setText(""+point);
-                Toast.makeText(Send_Points.this, "Points Successfully Sent!", Toast.LENGTH_SHORT).show();
-                //IMPORTANT: We have to update the total of points of the user and communicate to the server to update all data of the 2 users, total points, points sent and received
+                updateAllTextViews();
+                points_toSend.setText("");
+                usernameTextView.setText("");
             }
         });
     }
@@ -73,7 +88,71 @@ public class Send_Points extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode==0) {
 
             //Display the selected username on the textView available
-            username.setText(data.getStringExtra("Username"));
+            usernameTextView.setText(data.getStringExtra("Username"));
         }
+    }
+
+    Runnable server = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                client = new Socket(serverIp, 4444);  //connect to server
+                printwriter = new PrintWriter(client.getOutputStream(), true);
+                printwriter.write(message);  //write the message to output stream
+                printwriter.flush();
+                printwriter.close();
+                client.close();   //closing the connection
+
+                client = new Socket(serverIp, 4444);  //connect to server
+                // Get input buffer
+                BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                messageFromServer = br.readLine();
+                br.close();
+                client.close();   //closing the connection
+
+            } catch (UnknownHostException e){
+                e.printStackTrace();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    protected void CommunicateWithServer (){
+        t=new Thread(server, "My Server");
+        t.start();
+        try {
+            t.join();
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateAllTextViews(){
+        message="Asking_AllPoints"+" "+username;
+        CommunicateWithServer();
+
+        //[0] - total points ; [1] - total points send ; [2] - total points received
+        String [] allpoints=messageFromServer.split(" ");
+
+        //To display the total amount of points that the user sent to friends
+        points_sent= (TextView) findViewById(R.id.points2);
+        points_sent.setText(allpoints[0]);
+
+        //To display the total amount of points of the user
+        points_sent= (TextView) findViewById(R.id.points_sent2);
+        points_sent.setText(allpoints[1]);
+
+        //To display the total amount of points of the user
+        points_sent= (TextView) findViewById(R.id.points_received2);
+        points_sent.setText(allpoints[2]);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backHome = new Intent(getApplicationContext(),User_Home.class);
+        backHome.putExtra("Username", username);
+        startActivity(backHome);
     }
 }

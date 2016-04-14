@@ -30,7 +30,10 @@ public class Search_User extends AppCompatActivity {
         itemsUsernames.setAdapter(itemsAdapter);
 
         //Code to allow the reading from the coordinates to check the users near to me
-        itemsAdapter.insert("Vasco",0); //Static user for test propose
+        itemsAdapter.insert("vasco",0); //Static user for test propose
+        itemsAdapter.insert("bernardo",0); //Static user for test propose
+        itemsAdapter.insert("rui",0); //Static user for test propose
+
 
         // Method to Select a users from the List and return
         setupListViewListener();

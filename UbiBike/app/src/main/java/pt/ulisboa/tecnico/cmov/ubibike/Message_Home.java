@@ -35,7 +35,10 @@ public class Message_Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //search all available friends neer me
-                adapterItems.add("Vasco");
+                adapterItems.insert("vasco",0);
+                adapterItems.insert("bernardo",0);
+                adapterItems.insert("rui",0);
+
             }
         });
 

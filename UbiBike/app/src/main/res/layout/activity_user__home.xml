@@ -40,6 +40,15 @@
         android:layout_marginStart="35dp"
         android:textColor="#060505" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/points_presentation"
+        android:layout_alignBaseline="@+id/my_points"
+        android:layout_alignBottom="@+id/my_points"
+        android:layout_toEndOf="@+id/my_points" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -7,10 +7,25 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class User_Home extends AppCompatActivity {
     private String[] SavedFiles;
+    private Socket client;
+    private PrintWriter printwriter;
+    private String message;
+    private String serverIp="10.0.2.2";
+    private String username;
+    private String method="Asking_Points";
+    private String messageFromServer;
+    private Thread t;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +35,13 @@ public class User_Home extends AppCompatActivity {
 
         //To get the intent, extract the username that perform the login operation and display it on the textView
         Intent data = getIntent();
-        String username = data.getStringExtra("Username");
+        username = data.getStringExtra("Username");
         TextView username_presentation = (TextView) findViewById(R.id.username_presentation);
         username_presentation.setText(username);
+
+        CommunicateWithServer();
+        TextView points_presentation = (TextView) findViewById(R.id.points_presentation);
+        points_presentation.setText(messageFromServer);
 
         //Button to go to Send Points activity
         Button send_points=(Button)findViewById(R.id.send_points);
@@ -31,6 +50,7 @@ public class User_Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent goSend_points = new Intent(v.getContext(), Send_Points.class);
+                goSend_points.putExtra("Username",username);
                 startActivity(goSend_points);
             }
         });
@@ -80,5 +100,42 @@ public class User_Home extends AppCompatActivity {
         Intent logout = new Intent(getApplicationContext(),Welcome_Screen.class);
         logout.putExtra("Logout", "Logout");
         startActivity(logout);
+    }
+
+    Runnable server = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                message=method+" "+username;
+                client = new Socket(serverIp, 4444);  //connect to server
+                printwriter = new PrintWriter(client.getOutputStream(), true);
+                printwriter.write(message);  //write the message to output stream
+                printwriter.flush();
+                printwriter.close();
+                client.close();   //closing the connection
+
+                client = new Socket(serverIp, 4444);  //connect to server
+                // Get input buffer
+                BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                messageFromServer = br.readLine();
+                br.close();
+                client.close();   //closing the connection
+
+            } catch (UnknownHostException e){
+                e.printStackTrace();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    protected void CommunicateWithServer (){
+        t=new Thread(server, "My Server");
+        t.start();
+        try {
+            t.join();
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
     }
 }

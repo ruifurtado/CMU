@@ -13,7 +13,9 @@ public class Server {
     private static InputStreamReader inputStreamReader;
     private static BufferedReader bufferedReader;
     private static String message;
-    private static Map<String, User> structure = new HashMap<String, User>();
+    private static Map<String, User> usermap = new HashMap<String, User>();
+    private static Map<String, Station> stationsmap = new HashMap<String, Station>();
+
 
     public static void main(String[] args) {
         try {
@@ -22,6 +24,8 @@ public class Server {
             System.out.println("Could not listen on port: 4444");
         }
         System.out.println("Server started. Listening to the port 4444");
+        //populate the Stations with all the information
+        populate();
         while (true) {
             try {
                 //Client -> Server
@@ -36,8 +40,8 @@ public class Server {
                     case "Sign_Up":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]+" Email: "+array[2]+" Password: "+array[3]);
                         User user = new User(array[1],array[2],array[3]);
-                    	if(!structure.containsKey(array[1])){
-                    		structure.put(array[1], user);
+                    	if(!usermap.containsKey(array[1])){
+                    		usermap.put(array[1], user);
                     		sendMessageToClient("Sign Up Successfully");
                     	}
                     	else
@@ -45,8 +49,8 @@ public class Server {
                     break;
                     case "Sign_In":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]+" Password: "+array[2]);
-                    	if(structure.containsKey(array[1])){
-                    		if(structure.get(array[1]).getPassword().equals(array[2])){
+                    	if(usermap.containsKey(array[1])){
+                    		if(usermap.get(array[1]).getPassword().equals(array[2])){
                     			sendMessageToClient("1");
                     		}
                     		else
@@ -55,6 +59,25 @@ public class Server {
                     	else
                     		sendMessageToClient("User doesn't exist!");
                 	break;
+                    case "Send_Points":
+                        System.out.println("Method: "+array[0]+" Sender: "+array[1]+" Points: "+array[2]+" Receiver: "+array[3]);
+                        if (usermap.get(array[1]).canISendPoints(Integer.parseInt(array[2]))){
+                        	usermap.get(array[1]).sendPoints(Integer.parseInt(array[2]));
+                        	usermap.get(array[3]).receivePoints(Integer.parseInt(array[2]));
+                            sendMessageToClient("Points successfully sent to"+" "+array[3]);
+                        }
+                        else{
+                            sendMessageToClient("Not enough points to send!");
+                        } 
+                        break;
+                    case "Asking_Points":
+                        System.out.println("Method: "+array[0]+" Username: "+array[1]);
+                        sendMessageToClient(""+usermap.get(array[1]).getPoints());
+                        break;
+                    case "Asking_AllPoints":
+                        System.out.println("Method: "+array[0]+" Username: "+array[1]);
+                        sendMessageToClient(""+usermap.get(array[1]).getAllPoints());
+                        break;
                 }
             } catch (IOException ex) {
             	ex.printStackTrace();
@@ -77,5 +100,14 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}   //accept the client connection       
+    }
+    
+    public static void populate(){
+    	stationsmap.put("Cascais", new Station("Cascais",15,38.694996,-9.422548, "Excellent"));
+    	stationsmap.put("Parede", new Station("Parede",12,38.693449, -9.355405, "Very Good"));
+    	stationsmap.put("São João do Estoril", new Station("São João do Estoril",15,38.701810, -9.385989, "Excellent"));
+    	stationsmap.put("Carcavelos", new Station("Carcavelos",10,38.687955, -9.337342, "Very Good"));
+    	stationsmap.put("Oeiras", new Station("Oeiras",10,38.697165, -9.314658, "Very Good"));
+    	stationsmap.put("Paço de Arcos", new Station("Paço de Arcos",8 , 38.697081, 9.291610, "Good"));
     }
 }
