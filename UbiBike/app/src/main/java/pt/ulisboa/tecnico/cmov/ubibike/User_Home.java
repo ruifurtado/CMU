@@ -56,12 +56,13 @@ public class User_Home extends AppCompatActivity {
         });
 
         //Button to go to Trajectories activity
-        Button go_trajectories=(Button)findViewById(R.id.trajectory);
+        final Button go_trajectories=(Button)findViewById(R.id.trajectory);
         assert go_trajectories != null;
         go_trajectories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goTrajectories = new Intent(v.getContext(), Trajectories.class);
+                goTrajectories.putExtra("Username",username);
                 startActivity(goTrajectories);
             }
         });
@@ -73,6 +74,7 @@ public class User_Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent goStations = new Intent(v.getContext(), Stations.class);
+                goStations.putExtra("Username",username);
                 startActivity(goStations);
             }
         });
@@ -83,6 +85,7 @@ public class User_Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent goMessages = new Intent(v.getContext(), Message_Home.class);
+                goMessages.putExtra("Username",username);
                 startActivity(goMessages);
             }
         });
@@ -106,7 +109,7 @@ public class User_Home extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                message=method+" "+username;
+                message=method+","+username;
                 client = new Socket(serverIp, 4444);  //connect to server
                 printwriter = new PrintWriter(client.getOutputStream(), true);
                 printwriter.write(message);  //write the message to output stream

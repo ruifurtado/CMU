@@ -69,7 +69,7 @@ public class Send_Points extends AppCompatActivity {
                 Integer point = 0;
                 try {
                     point = Integer.parseInt(points);
-                    message="Send_Points"+" "+username+ " "+points+" "+usernameTextView.getText();
+                    message="Send_Points"+","+username+ ","+points+","+usernameTextView.getText();
                     CommunicateWithServer();
                     Toast.makeText(Send_Points.this, messageFromServer, Toast.LENGTH_SHORT).show();
                 } catch(NumberFormatException e) {
@@ -129,7 +129,7 @@ public class Send_Points extends AppCompatActivity {
     }
 
     public void updateAllTextViews(){
-        message="Asking_AllPoints"+" "+username;
+        message="Asking_AllPoints"+","+username;
         CommunicateWithServer();
 
         //[0] - total points ; [1] - total points send ; [2] - total points received

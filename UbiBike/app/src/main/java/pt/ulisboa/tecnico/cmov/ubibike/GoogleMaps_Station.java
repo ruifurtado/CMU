@@ -48,4 +48,14 @@ public class GoogleMaps_Station extends FragmentActivity implements OnMapReadyCa
         mMap.addMarker(new MarkerOptions().position(location).title("Marker in "+intent.getStringExtra("location")));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backHome = new Intent(getApplicationContext(),Station_Description.class);
+        backHome.putExtra("Username", getIntent().getStringExtra("Username"));
+        backHome.putExtra("Station", getIntent().getStringExtra("Station"));
+        startActivity(backHome);
+    }
+
 }

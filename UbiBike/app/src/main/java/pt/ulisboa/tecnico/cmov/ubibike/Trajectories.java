@@ -53,4 +53,12 @@ public class Trajectories extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backHome = new Intent(getApplicationContext(),User_Home.class);
+        backHome.putExtra("Username", getIntent().getStringExtra("Username"));
+        startActivity(backHome);
+    }
 }

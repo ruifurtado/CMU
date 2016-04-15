@@ -35,6 +35,7 @@ public class Message_Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //search all available friends neer me
+                adapterItems.clear();
                 adapterItems.insert("vasco",0);
                 adapterItems.insert("bernardo",0);
                 adapterItems.insert("rui",0);
@@ -47,10 +48,19 @@ public class Message_Home extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
                 Intent myIntent = new Intent(item.getContext(), Message_Chat.class);
                 String user=(String) adapter.getItemAtPosition(pos);
-                myIntent.putExtra("Username", user );
+                myIntent.putExtra("ToUsername", user );
+                myIntent.putExtra("Username", getIntent().getStringExtra("Username"));
                 startActivity(myIntent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backHome = new Intent(getApplicationContext(),User_Home.class);
+        backHome.putExtra("Username", getIntent().getStringExtra("Username"));
+        startActivity(backHome);
     }
 }
 

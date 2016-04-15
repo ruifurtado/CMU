@@ -2,6 +2,8 @@ package pt.ulisboa.tecnico.cmov.ubibike;
 
 import android.content.Context;
 import org.apache.commons.io.FileUtils;
+
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,7 +35,7 @@ public class Message_Chat extends AppCompatActivity {
         setContentView(R.layout.activity_message__chat);
 
         final TextView friend = (TextView) findViewById(R.id.friendLabel);  //Para atualizar o nome de com que estamos a falar por msg
-        friendName = getIntent().getStringExtra("Username");
+        friendName = getIntent().getStringExtra("ToUsername");
         friend.setText(friendName);
         itemsList = (ListView) findViewById(R.id.messagesContainer);
 
@@ -86,5 +88,13 @@ public class Message_Chat extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backHome = new Intent(getApplicationContext(),Message_Home.class);
+        backHome.putExtra("Username", getIntent().getStringExtra("Username"));
+        startActivity(backHome);
     }
 }

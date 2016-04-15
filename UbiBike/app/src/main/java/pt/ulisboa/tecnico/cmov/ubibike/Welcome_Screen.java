@@ -80,7 +80,7 @@ public class Welcome_Screen extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                message=method+" "+username+" "+email+" "+password;
+                message=method+","+username+","+email+","+password;
                 client = new Socket(serverIp, 4444);  //connect to server
                 printwriter = new PrintWriter(client.getOutputStream(), true);
                 printwriter.write(message);  //write the message to output stream

@@ -33,7 +33,7 @@ public class Server {
                 inputStreamReader = new InputStreamReader(clientSocket.getInputStream());
                 bufferedReader = new BufferedReader(inputStreamReader); //get the client message
                 message = bufferedReader.readLine();
-                String [] array = message.split(" ");
+                String [] array = message.split(",");
                 inputStreamReader.close();
                 clientSocket.close();
                 switch(array[0]){
@@ -46,7 +46,7 @@ public class Server {
                     	}
                     	else
                     		sendMessageToClient("Username Already on use! Try another!");
-                    break;
+                    	break;
                     case "Sign_In":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]+" Password: "+array[2]);
                     	if(usermap.containsKey(array[1])){
@@ -58,7 +58,7 @@ public class Server {
                     	}
                     	else
                     		sendMessageToClient("User doesn't exist!");
-                	break;
+                    	break;
                     case "Send_Points":
                         System.out.println("Method: "+array[0]+" Sender: "+array[1]+" Points: "+array[2]+" Receiver: "+array[3]);
                         if (usermap.get(array[1]).canISendPoints(Integer.parseInt(array[2]))){
@@ -78,6 +78,28 @@ public class Server {
                         System.out.println("Method: "+array[0]+" Username: "+array[1]);
                         sendMessageToClient(""+usermap.get(array[1]).getAllPoints());
                         break;
+                    case "Asking_Stations":
+                        System.out.println("Method: "+array[0]);
+                        String aux="";
+                        for(String key : stationsmap.keySet()){
+                        	if(stationsmap.get(key).getAvailableBikes()>0)
+                        		aux=aux+key+",";
+                        }
+                        sendMessageToClient(aux);
+                        break;
+                    case "Station_Description":
+                        System.out.println("Method: "+array[0]+" Station: "+array[1]);
+                        sendMessageToClient(""+stationsmap.get(array[1]).getAvailableBikes()+","+stationsmap.get(array[1]).getLatitude()+","+stationsmap.get(array[1]).getLongitude()+","+stationsmap.get(array[1]).getFeedback());
+                        break;
+                    case "Book_Bike":
+                    	System.out.println("Method: "+array[0]+" Station: "+array[1]);
+                    	if(stationsmap.get(array[1]).getAvailableBikes()>0){
+                    		stationsmap.get(array[1]).updateAvailableBikes();
+                            sendMessageToClient("Bike successfully booked!");
+                    	}
+                    	else
+                            sendMessageToClient("This station doesn't have any bike available!");
+                    	break;
                 }
             } catch (IOException ex) {
             	ex.printStackTrace();
@@ -108,6 +130,6 @@ public class Server {
     	stationsmap.put("São João do Estoril", new Station("São João do Estoril",15,38.701810, -9.385989, "Excellent"));
     	stationsmap.put("Carcavelos", new Station("Carcavelos",10,38.687955, -9.337342, "Very Good"));
     	stationsmap.put("Oeiras", new Station("Oeiras",10,38.697165, -9.314658, "Very Good"));
-    	stationsmap.put("Paço de Arcos", new Station("Paço de Arcos",8 , 38.697081, 9.291610, "Good"));
+    	stationsmap.put("Paço de Arcos", new Station("Paço de Arcos",8 , 38.697081, -9.291610, "Good"));
     }
 }

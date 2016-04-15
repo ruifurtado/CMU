@@ -9,10 +9,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Station_Description extends AppCompatActivity {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-    private int bikes_nr;
-    private TextView bikes;
+public class Station_Description extends AppCompatActivity {
+    private Socket client;
+    private PrintWriter printwriter;
+    private String message;
+    private String serverIp="10.0.2.2";
+    private String username;
+    private String messageFromServer;
+    private Thread t;
+    private Intent intent;
+    private String[] stationInformation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,23 +34,13 @@ public class Station_Description extends AppCompatActivity {
         setContentView(R.layout.activity_station__description);
 
         //Get the intent
-        Intent intent = getIntent();
+        intent = getIntent();
 
         //Display all the information about the Station, that was passed on the received intent
         TextView location = (TextView) findViewById(R.id.location_front);
-        location.setText(intent.getStringExtra("localidade"));
+        location.setText(intent.getStringExtra("Station"));
 
-        bikes = (TextView) findViewById(R.id.bikes_front);
-        bikes.setText(intent.getStringExtra("bikes"));
-
-        //Static value only for test proposes
-        String nrBikes=intent.getStringExtra("bikes");
-        bikes_nr=Integer.parseInt(nrBikes);
-
-        TextView coordinates = (TextView) findViewById(R.id.coordinates_front);
-        coordinates.setText(intent.getStringExtra("coordinates"));
-        TextView feedback = (TextView) findViewById(R.id.feedback_front);
-        feedback.setText(intent.getStringExtra("feedback"));
+        updateStationInformation();
 
         //Button to Book a Bike
         Button book_bike=(Button)findViewById(R.id.book_bike);
@@ -45,13 +48,11 @@ public class Station_Description extends AppCompatActivity {
         book_bike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //IMPORTANT: The number of bikes available has to be updated on the server every time
-                if (bikes_nr != 0) {
-                    bikes_nr--;
-                    Toast.makeText(Station_Description.this, "Successful Booking", Toast.LENGTH_SHORT).show();
-                    bikes.setText("" + bikes_nr);
-                } else
-                    Toast.makeText(Station_Description.this, "No more bikes available! Please check in another Station", Toast.LENGTH_SHORT).show();
+                message="Book_Bike"+","+intent.getStringExtra("Station");
+                CommunicateWithServer();
+                Toast.makeText(Station_Description.this, messageFromServer, Toast.LENGTH_SHORT).show();
+                updateStationInformation();
+
             }
         });
 
@@ -62,11 +63,71 @@ public class Station_Description extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent goMaps_Station = new Intent(v.getContext(), GoogleMaps_Station.class);
-                goMaps_Station.putExtra("lat",getIntent().getDoubleExtra("lat",0));
-                goMaps_Station.putExtra("long",getIntent().getDoubleExtra("long",0));
-                goMaps_Station.putExtra("location",getIntent().getStringExtra("localidade"));
+
+                goMaps_Station.putExtra("Username",intent.getStringExtra("Username"));
+                goMaps_Station.putExtra("Station",intent.getStringExtra("Station"));
+                goMaps_Station.putExtra("lat", Double.parseDouble(stationInformation[1]));
+                goMaps_Station.putExtra("long", Double.parseDouble(stationInformation[2]));
                 startActivity(goMaps_Station);
             }
         });
+    }
+
+    Runnable server = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                client = new Socket(serverIp, 4444);  //connect to server
+                printwriter = new PrintWriter(client.getOutputStream(), true);
+                printwriter.write(message);  //write the message to output stream
+                printwriter.flush();
+                printwriter.close();
+                client.close();   //closing the connection
+
+                client = new Socket(serverIp, 4444);  //connect to server
+                // Get input buffer
+                BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                messageFromServer = br.readLine();
+                br.close();
+                client.close();   //closing the connection
+
+            } catch (UnknownHostException e){
+                e.printStackTrace();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    protected void CommunicateWithServer (){
+        t=new Thread(server, "My Server");
+        t.start();
+        try {
+            t.join();
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateStationInformation(){
+        message="Station_Description"+","+intent.getStringExtra("Station");
+        CommunicateWithServer();
+        //[0] -> number of bikes available ; [1] -> latitude ; [2] -> longitude ; [3] -> feedback
+        stationInformation=messageFromServer.split(",");
+
+        TextView bikes = (TextView) findViewById(R.id.bikes_front);
+        bikes.setText(stationInformation[0]);
+        TextView coordinates = (TextView) findViewById(R.id.coordinates_front);
+        coordinates.setText(stationInformation[1]+" "+stationInformation[2]);
+        TextView feedback = (TextView) findViewById(R.id.feedback_front);
+        feedback.setText(stationInformation[3]);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent backHome = new Intent(getApplicationContext(),Stations.class);
+        backHome.putExtra("Username", getIntent().getStringExtra("Username"));
+        startActivity(backHome);
     }
 }
