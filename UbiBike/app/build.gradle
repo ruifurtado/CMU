@@ -17,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    repositories{
+        flatDir{
+            dirs 'libs'
+        }
+    }
+
 }
 
 dependencies {
@@ -28,5 +34,6 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     compile 'commons-io:commons-io:2.4'
+    compile(name:'Termite-WifiP2P-API', ext:'aar')
 
 }
