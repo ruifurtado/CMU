@@ -1,0 +1,14 @@
+newdevice bernardo
+newdevice vasco
+list emus
+list devices
+assignaddr e1
+assignaddr e2
+list devices
+list emus
+binddevice bernardo e2
+binddevice vasco e1
+move bernardo (vasco)
+creategroup bernardo (vasco)
+commit
+
