@@ -65,9 +65,10 @@ public class Message_Chat extends AppCompatActivity {
         Toast.makeText(this, ipDevice, Toast.LENGTH_SHORT).show();
 
         // spawn the chat server background task
-       // new IncommingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        //new IncommingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        new OutgoingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ipDevice);
+        //new OutgoingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ipDevice);
+
 
         Button sendMsg = (Button) findViewById(R.id.chatSendButton);
         assert sendMsg != null;
@@ -92,6 +93,10 @@ public class Message_Chat extends AppCompatActivity {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); //Hide the Keyboard after send a messgae
                 imm.hideSoftInputFromWindow(newItem.getWindowToken(), 0);
                 newItem.getText().clear(); //CLean the text on the editText
+
+                //new OutgoingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ipDevice);
+
+
             }
         });
     }
@@ -123,9 +128,12 @@ public class Message_Chat extends AppCompatActivity {
 
     public class SendCommTask extends AsyncTask<String, String, Void> {
 
+
         @Override
         protected Void doInBackground(String... msg) {
             try {
+                if(mCliSocket==null)
+                    mCliSocket = new SimWifiP2pSocket(ipDevice, Integer.parseInt(getString(R.string.port)));
                 Log.d("Message", msg[0]);
                 mCliSocket.getOutputStream().write((msg[0] + "\n").getBytes());
                 BufferedReader sockIn = new BufferedReader(new InputStreamReader(mCliSocket.getInputStream()));
@@ -141,7 +149,6 @@ public class Message_Chat extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //Nothing to do in this method
-            new OutgoingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,ipDevice);
         }
     }
 

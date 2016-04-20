@@ -131,5 +131,9 @@ public class Server {
     	stationsmap.put("Carcavelos", new Station("Carcavelos",10,38.687955, -9.337342, "Very Good"));
     	stationsmap.put("Oeiras", new Station("Oeiras",10,38.697165, -9.314658, "Very Good"));
     	stationsmap.put("Paço de Arcos", new Station("Paço de Arcos",8 , 38.697081, -9.291610, "Good"));
+        
+        usermap.put("bernardo", new User("bernardo", "bernardo@gmail.com","13"));
+        usermap.put("vasco", new User("vasco", "bernardo@gmail.com","13"));
+
     }
 }

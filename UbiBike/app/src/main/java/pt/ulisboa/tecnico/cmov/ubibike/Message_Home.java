@@ -49,7 +49,6 @@ public class Message_Home extends AppCompatActivity implements PeerListListener,
     private Messenger mService = null;
     private Map<String, String> peersInfo = new HashMap<>();
     private SimWifiP2pSocketServer mSrvSocket = null;
-    private SimWifiP2pSocket mCliSocket = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +73,8 @@ public class Message_Home extends AppCompatActivity implements PeerListListener,
         mReceiver = new SimWifiP2pBroadcastReceiver(this);
         registerReceiver(mReceiver, filter);
 
-        Intent intent = new Intent(this.getApplicationContext(), SimWifiP2pService.class);
+        Intent intent = new Intent(this, SimWifiP2pService.class);
+        //startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mBound = true;
 
@@ -106,19 +106,12 @@ public class Message_Home extends AppCompatActivity implements PeerListListener,
                 myIntent.putExtra("ToUsername", user );
                 myIntent.putExtra("Username", getIntent().getStringExtra("Username"));
                 myIntent.putExtra("IP",peersInfo.get(user));
+
                 startActivity(myIntent);
+
             }
         });
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(mReceiver);
-        unbindService(mConnection);
-        mBound = false;
-    }
-
 
     private ServiceConnection mConnection = new ServiceConnection() {
         // callbacks for service binding, passed to bindService()
@@ -180,8 +173,7 @@ public class Message_Home extends AppCompatActivity implements PeerListListener,
 
         @Override
         protected void onProgressUpdate(String... values) {
-            if(values[0]!=null)
-                Toast.makeText(Message_Home.this, "Recebi: "+ values[0], Toast.LENGTH_SHORT).show();
+            Toast.makeText(Message_Home.this, "Recebi: "+ values[0], Toast.LENGTH_SHORT).show();
         }
     }
 

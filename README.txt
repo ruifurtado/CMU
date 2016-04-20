@@ -13,7 +13,7 @@ ESTE FICHEIRO DESCREVE TODAS AS TAREFAS E DUVIDAS RELACIONADAS COM O PROJECTO "U
 	
 	- layouts : check
 	
-	- toda a interação entre actividades, butões etc : check
+	- toda a interação entre actividades, botões etc : check
 
 	DUVIDA: Na actividades das estacões, quando reservamos uma bike, pode ser como estamos a fazer? ("book a bike at specific station, while showing their location on a map"  : PERGUNTAR
 
@@ -21,7 +21,7 @@ ESTE FICHEIRO DESCREVE TODAS AS TAREFAS E DUVIDAS RELACIONADAS COM O PROJECTO "U
 	
 	- SIGN IN + SIGN UP : check
 	
-	- STATIONS + BOOK A BIKE (apenas a visualização das estacões com bikes disponiveis com todos os dados relacionados, e o decremento de uma bike quando ha uma reserva) : check
+	- STATIONS + BOOK A BIKE (apenas a visualização das estacões com bikes disponíveis com todos os dados relacionados, e o decremento de uma bike quando ha uma reserva) : check
 	
 	- GET LIST OF STATIONS WITH AVAILABLE BIKES TO BOOK : check
 
