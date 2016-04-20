@@ -83,6 +83,12 @@
             android:name=".Message_Chat"
             android:label="UbiBike"
             android:theme="@style/AppTheme" />
+
+        <service android:name="pt.inesc.termite.wifidirect.service.SimWifiP2pService" />
+        <service
+            android:name=".SimWifiP2pService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
