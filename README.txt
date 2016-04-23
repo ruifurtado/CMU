@@ -10,26 +10,28 @@ ONGOIND TASK:
 
 	-> CHANGE STATIONS LAYOUT WITH THE SERVER INFORMATION (VASCO)
 	-> CHANGE CHAT LAYOUT AND ADAPT WITH THE CODE OF SEND MESSAGES (RUI)
-	-> SEND POINTS 
+	-> SEND POINTS (BERNARDO)  - FEITO!
+
+	-> PERCEBER O LAB 5 E COMO USAR PARA O PROJECTO (TUDO O QUE ENVOLVE) AS TRAJECTORIAS  (BERNARDO,RUI, VASCO)
 
 
 1. GUI DESIGN AND IMPLEMENTATION
 	
-	- layouts : check
+	- layouts : CHECK
 	
-	- toda a interação entre actividades, botões etc : check
+	- toda a interação entre actividades, botões etc : CHECK
 
 2. CENTRAL SERVER + UBIBIKE
 	
-	- SIGN IN + SIGN UP : check
+	- SIGN IN + SIGN UP : CHECK
 	
-	- STATIONS + BOOK A BIKE (apenas a visualização das estacões com bikes disponíveis com todos os dados relacionados, e o decremento de uma bike quando ha uma reserva) : check
+	- STATIONS + BOOK A BIKE (apenas a visualização das estacões com bikes disponíveis com todos os dados relacionados, e o decremento de uma bike quando ha uma reserva) : CHECK
 	
-	- GET LIST OF STATIONS WITH AVAILABLE BIKES TO BOOK : check
+	- GET LIST OF STATIONS WITH AVAILABLE BIKES TO BOOK : CHECK
 
-	- BOOK BIKE AT SPECIFIC SATION (while showing their location on a map *DUVIDA 1.*)  : check
+	- BOOK BIKE AT SPECIFIC SATION (while showing their location on a map *DUVIDA 1.*)  : CHECK
 
-	- GET USER INFORMATION (including current score and trajectories) : check apenas os scores
+	- GET USER INFORMATION (including current score and trajectories) : CHECK apenas os scores
  
 	- SEND NEW TRAJECTORY : POR FAZER
 	
@@ -37,9 +39,9 @@ ONGOIND TASK:
 	
 3. BETWEEN MOBILE DEVICES (using WIFI Direct)
 
-	- SEND AND RECEIVE POINTS : POR FAZER
+	- SEND AND RECEIVE POINTS : CHECK
 
-	- SEND AND RECEIVE TEXT MESSAGES : check
+	- SEND AND RECEIVE TEXT MESSAGES : CHECK
 
 4. BETWEEN  MOBILE DEVICES, BLE BEACONS, AND THE CENTRAL SERVER
 
