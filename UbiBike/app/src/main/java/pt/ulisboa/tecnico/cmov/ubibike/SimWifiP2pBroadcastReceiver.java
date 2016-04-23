@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,9 @@ import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 
 public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
-    private Welcome_Screen mActivity;
+    private Activity mActivity;
 
-    public SimWifiP2pBroadcastReceiver(Welcome_Screen activity) {
+    public SimWifiP2pBroadcastReceiver(Activity activity) {
         super();
         this.mActivity = activity;
     }

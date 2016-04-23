@@ -1,6 +1,9 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +27,9 @@ public class User_Home extends AppCompatActivity {
     private String method="Asking_Points";
     private String messageFromServer;
     private Thread t;
+    private BroadcastReceiver broadcastReceiver= null;
+    private TextView points_presentation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +44,12 @@ public class User_Home extends AppCompatActivity {
         username_presentation.setText(username);
 
         CommunicateWithServer();
-        TextView points_presentation = (TextView) findViewById(R.id.points_presentation);
+        points_presentation = (TextView) findViewById(R.id.points_presentation);
         points_presentation.setText(messageFromServer);
+
+        IntentFilter filter = new IntentFilter("Points Received");
+        broadcastReceiver = broadcastReceiver_create;
+        registerReceiver(broadcastReceiver, filter);
 
         //Button to go to Send Points activity
         Button send_points=(Button)findViewById(R.id.send_points);
@@ -90,9 +100,19 @@ public class User_Home extends AppCompatActivity {
         });
     }
 
+    private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //itemsAdapter.clear();
+            CommunicateWithServer();
+            points_presentation.setText(messageFromServer);
+        }
+    };
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        unregisterReceiver(broadcastReceiver);
         Intent backHome = new Intent(User_Home.this,Welcome_Screen.class);
         backHome.putExtra("Logout","Logout");
         startActivity(backHome);

@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 
 public class Message_Chat extends AppCompatActivity {
 
@@ -36,7 +35,6 @@ public class Message_Chat extends AppCompatActivity {
     private Calendar c = Calendar.getInstance();
     private String ipDevice;
     private SimWifiP2pSocket mCliSocket = null;
-    private SimWifiP2pSocketServer mSrvSocket = null;
     private BroadcastReceiver broadcastReceiver= null;
 
     @Override

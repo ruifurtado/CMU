@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 
 public class DataHolder {
@@ -8,6 +11,7 @@ public class DataHolder {
     private SimWifiP2pManager.Channel mChannel = null;
     private static final DataHolder holder = new DataHolder();
     private int flagWifi=0;
+
 
     public void setFlagWifi(){this.flagWifi=1;}
 

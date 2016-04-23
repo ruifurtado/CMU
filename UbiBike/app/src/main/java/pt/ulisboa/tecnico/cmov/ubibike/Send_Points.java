@@ -1,8 +1,13 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
+import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 
 public class Send_Points extends AppCompatActivity {
 
@@ -27,6 +34,11 @@ public class Send_Points extends AppCompatActivity {
     private String serverIp="10.0.2.2";
     private String messageFromServer;
     private Thread t;
+
+    private String ipDevice;
+    private SimWifiP2pSocket mCliSocket = null;
+    private BroadcastReceiver broadcastReceiver= null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +54,10 @@ public class Send_Points extends AppCompatActivity {
 
         //update all text views about points
         updateAllTextViews();
+
+        IntentFilter filter = new IntentFilter("Points Received");
+        broadcastReceiver = broadcastReceiver_create;
+        registerReceiver(broadcastReceiver, filter);
 
         //Button to go to Search User activity and expects a returned username
         Button search_user=(Button)findViewById(R.id.search);
@@ -70,6 +86,9 @@ public class Send_Points extends AppCompatActivity {
                     message="Send_Points"+","+username+ ","+points+","+usernameTextView.getText();
                     CommunicateWithServer();
                     Toast.makeText(Send_Points.this, messageFromServer, Toast.LENGTH_SHORT).show();
+
+                    new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,message);
+
                 } catch(NumberFormatException e) {
                     Toast.makeText(Send_Points.this, "Write a valid amount of points", Toast.LENGTH_SHORT).show();
                 }
@@ -80,6 +99,40 @@ public class Send_Points extends AppCompatActivity {
         });
     }
 
+    private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //itemsAdapter.clear();
+            updateAllTextViews();
+        }
+    };
+
+    public class SendCommTask extends AsyncTask<String, String, Void> {
+
+        @Override
+        protected Void doInBackground(String... msg) {
+            try {
+                if(mCliSocket==null)
+                    mCliSocket = new SimWifiP2pSocket(ipDevice, Integer.parseInt(getString(R.string.port)));
+                Log.d("Message", msg[0]);
+                mCliSocket.getOutputStream().write((msg[0] + "\n").getBytes());
+                BufferedReader sockIn = new BufferedReader(new InputStreamReader(mCliSocket.getInputStream()));
+                sockIn.readLine();
+                mCliSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mCliSocket = null;
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //Nothing to do in this method
+        }
+    }
+
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         //cycle to check if it's a result from the Search User activity
@@ -87,6 +140,7 @@ public class Send_Points extends AppCompatActivity {
 
             //Display the selected username on the textView available
             usernameTextView.setText(data.getStringExtra("Username"));
+            ipDevice=data.getStringExtra("IP");
         }
     }
 
@@ -149,6 +203,7 @@ public class Send_Points extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        unregisterReceiver(broadcastReceiver);
         Intent backHome = new Intent(getApplicationContext(),User_Home.class);
         backHome.putExtra("Username", username);
         startActivity(backHome);

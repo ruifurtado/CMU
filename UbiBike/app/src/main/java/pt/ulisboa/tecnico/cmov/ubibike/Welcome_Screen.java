@@ -217,14 +217,22 @@ public class Welcome_Screen extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(String... values) {
             if(values[0]!=null) {
-                String sender = values[0].substring(0, values[0].indexOf(" "));
-                String message = values[0].substring(values[0].indexOf(" ") + 1);
-                Toast.makeText(Welcome_Screen.this, "New message from " + sender, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent("New Message");
-                readItems(sender);
-                msgList.add(message);
-                writeItems(sender);
-                sendBroadcast(intent);
+                if(values[0].contains("Send_Points")){
+                    String [] message = values[0].split(",");
+                    Toast.makeText(Welcome_Screen.this, "Received "+message[2]+" points from "+message[1], Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent("Points Received");
+                    sendBroadcast(intent);
+                }
+                else {
+                    String sender = values[0].substring(0, values[0].indexOf(" "));
+                    String message = values[0].substring(values[0].indexOf(" ") + 1);
+                    Toast.makeText(Welcome_Screen.this, "New message from " + sender, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent("New Message");
+                    readItems(sender);
+                    msgList.add(message);
+                    writeItems(sender);
+                    sendBroadcast(intent);
+                }
             }
         }
     }
