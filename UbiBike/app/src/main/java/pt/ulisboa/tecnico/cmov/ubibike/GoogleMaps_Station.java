@@ -57,5 +57,4 @@ public class GoogleMaps_Station extends FragmentActivity implements OnMapReadyCa
         backHome.putExtra("Station", getIntent().getStringExtra("Station"));
         startActivity(backHome);
     }
-
 }

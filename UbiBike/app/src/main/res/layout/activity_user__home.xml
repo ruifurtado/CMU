@@ -85,7 +85,8 @@
         android:id="@+id/booking_bike"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/send_message"
-        android:layout_marginBottom="40dp"
-        android:layout_alignEnd="@+id/send_message" />
+        android:layout_marginBottom="80dp"
+        android:layout_alignEnd="@+id/send_message"
+        android:layout_marginTop="-15dp" />
 
 </RelativeLayout>

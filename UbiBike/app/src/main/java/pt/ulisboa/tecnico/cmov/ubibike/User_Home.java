@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -17,7 +15,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class User_Home extends AppCompatActivity {
-    private String[] SavedFiles;
+
     private Socket client;
     private PrintWriter printwriter;
     private String message;
@@ -84,6 +82,7 @@ public class User_Home extends AppCompatActivity {
         go_Messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent goMessages = new Intent(v.getContext(), Message_Home.class);
                 goMessages.putExtra("Username",username);
                 startActivity(goMessages);
@@ -94,15 +93,9 @@ public class User_Home extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        SavedFiles = getApplicationContext().fileList();
-        File dir = getFilesDir();
-        for(int i=0;i<SavedFiles.length;i++) {
-            File file = new File(dir, SavedFiles[i]);
-            file.delete();
-        }
-        Intent logout = new Intent(getApplicationContext(),Welcome_Screen.class);
-        logout.putExtra("Logout", "Logout");
-        startActivity(logout);
+        Intent backHome = new Intent(User_Home.this,Welcome_Screen.class);
+        backHome.putExtra("Logout","Logout");
+        startActivity(backHome);
     }
 
     Runnable server = new Runnable() {

@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,6 +18,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Stations extends AppCompatActivity {
+
     private ListView itemsReservations;
     private ArrayAdapter<String> adapterReservations;
     private ArrayList<String> items;
@@ -35,6 +35,8 @@ public class Stations extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_stations);
+
+        username=getIntent().getStringExtra("Username");
 
         //Code to managed the lists and adapters
         items= new ArrayList<String>();
@@ -116,9 +118,8 @@ public class Stations extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent backHome = new Intent(getApplicationContext(),User_Home.class);
-        backHome.putExtra("Username", getIntent().getStringExtra("Username"));
+        Intent backHome = new Intent(getBaseContext(),User_Home.class);
+        backHome.putExtra("Username", username);
         startActivity(backHome);
     }
-
 }

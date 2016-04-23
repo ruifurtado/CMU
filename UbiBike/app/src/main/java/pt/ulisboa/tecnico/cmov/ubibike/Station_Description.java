@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +16,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Station_Description extends AppCompatActivity {
+
     private Socket client;
     private PrintWriter printwriter;
     private String message;
@@ -52,7 +52,6 @@ public class Station_Description extends AppCompatActivity {
                 CommunicateWithServer();
                 Toast.makeText(Station_Description.this, messageFromServer, Toast.LENGTH_SHORT).show();
                 updateStationInformation();
-
             }
         });
 
@@ -126,7 +125,7 @@ public class Station_Description extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent backHome = new Intent(getApplicationContext(),Stations.class);
+        Intent backHome = new Intent(getBaseContext(),Stations.class);
         backHome.putExtra("Username", getIntent().getStringExtra("Username"));
         startActivity(backHome);
     }

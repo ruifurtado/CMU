@@ -4,15 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 
 public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
-    private Message_Home mActivity;
+    private Welcome_Screen mActivity;
 
-    public SimWifiP2pBroadcastReceiver(Message_Home activity) {
+    public SimWifiP2pBroadcastReceiver(Welcome_Screen activity) {
         super();
         this.mActivity = activity;
     }
