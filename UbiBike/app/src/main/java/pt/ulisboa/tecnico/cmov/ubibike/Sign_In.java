@@ -109,4 +109,11 @@ public class Sign_In extends AppCompatActivity {
     protected void feedBackSignUp(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent backHome = new Intent(Sign_In.this,Welcome_Screen.class);
+        startActivity(backHome);
+    }
 }

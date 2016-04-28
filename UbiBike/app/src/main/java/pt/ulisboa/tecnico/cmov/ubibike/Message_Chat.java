@@ -5,13 +5,16 @@ import android.content.Context;
 import org.apache.commons.io.FileUtils;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,27 +31,34 @@ import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 
 public class Message_Chat extends AppCompatActivity {
 
-    private ListView itemsList;
-    private ArrayAdapter<String> itemsAdapter;
-    private ArrayList<String> msgList;
-    private String friendName;
-    private Calendar c = Calendar.getInstance();
+    private static final String TAG = "Message_ChatActivity";
+
+    private ChatArrayAdapter chatArrayAdapter;
+    private ListView listView;
+    private EditText chatText;
+    private Button buttonSend;
+    private boolean side = false;
     private String ipDevice;
     private SimWifiP2pSocket mCliSocket = null;
     private BroadcastReceiver broadcastReceiver= null;
+    private String friendName;
+    private ArrayList<String> msgList;
+
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_message__chat);
 
-        final TextView friend = (TextView) findViewById(R.id.friendLabel);  //Para atualizar o nome de com que estamos a falar por msg
-        friendName = getIntent().getStringExtra("ToUsername");
-        friend.setText(friendName);
-        itemsList = (ListView) findViewById(R.id.messagesContainer);
+        buttonSend = (Button) findViewById(R.id.send);
 
-        updateChatView();
+        listView = (ListView) findViewById(R.id.msgview);
+
+
+        friendName = getIntent().getStringExtra("ToUsername");
+        readItems(friendName);
 
         //ip of the device that corresponds to this user
         ipDevice=getIntent().getStringExtra("IP");
@@ -57,43 +67,53 @@ public class Message_Chat extends AppCompatActivity {
         broadcastReceiver = broadcastReceiver_create;
         registerReceiver(broadcastReceiver, filter);
 
-        Button sendMsg = (Button) findViewById(R.id.chatSendButton);
-        assert sendMsg != null;
-        sendMsg.setOnClickListener(new View.OnClickListener() {
+
+        chatText = (EditText) findViewById(R.id.msg);
+        chatText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    return sendChatMessage();
+                }
+                return false;
+            }
+        });
+        buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View arg0) {
+                sendChatMessage();
+            }
+        });
 
-                EditText newItem = (EditText) findViewById(R.id.messageEdit);
-                String msg = newItem.getText().toString();
+        listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        listView.setAdapter(chatArrayAdapter);
 
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                String formattedDate = df.format(c.getTime());
-                String newMsg=formattedDate + ": " + msg;
-                itemsAdapter.add(newMsg);
-
-                new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getIntent().getStringExtra("Username")+" "+newMsg);
-
-                //write the new message on the file related with this user
-                writeItems(friendName);
-
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); //Hide the Keyboard after send a messgae
-                imm.hideSoftInputFromWindow(newItem.getWindowToken(), 0);
-                newItem.getText().clear(); //CLean the text on the editText
+        //to scroll the list view to bottom on data change
+        chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(chatArrayAdapter.getCount() - 1);
             }
         });
     }
 
-    public void updateChatView(){
-        readItems(friendName);
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, msgList);    //inicializa sempre o Adapter com os antigos valores
-        itemsList.setAdapter(itemsAdapter);
+    private boolean sendChatMessage() {
+        chatArrayAdapter.add(new ChatMessage(side, chatText.getText().toString()));
+        //side = !side;
+        new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getIntent().getStringExtra("Username")+" "+chatText.getText().toString());
+        msgList.add("R "+chatText.getText().toString());
+        writeItems(friendName);
+        chatText.setText("");
+        return true;
     }
+
 
     private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             //itemsAdapter.clear();
-            updateChatView();
+            //updateChatView();
+            readItems(friendName);
         }
     };
 
@@ -126,8 +146,20 @@ public class Message_Chat extends AppCompatActivity {
     private void readItems(String filename) {
         File filesDir = getFilesDir();
         File file = new File(filesDir, filename+".txt");
+        chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.right);
+        listView.setAdapter(chatArrayAdapter);
         try {
             msgList = new ArrayList<>(FileUtils.readLines(file));
+            for(int i=0; i<msgList.size(); i++){
+                if(msgList.get(i).contains("R")){
+                    String message= msgList.get(i).substring(msgList.get(i).indexOf(" ") + 1);
+                    chatArrayAdapter.add(new ChatMessage(false, message));
+                }
+                else{
+                    String message= msgList.get(i).substring(msgList.get(i).indexOf(" ") + 1);
+                    chatArrayAdapter.add(new ChatMessage(true, message));
+                }
+            }
         } catch (IOException e) {
             msgList = new ArrayList<>();
         }

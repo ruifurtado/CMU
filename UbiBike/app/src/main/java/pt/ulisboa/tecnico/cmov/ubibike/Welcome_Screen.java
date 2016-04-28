@@ -229,7 +229,7 @@ public class Welcome_Screen extends AppCompatActivity {
                     Toast.makeText(Welcome_Screen.this, "New message from " + sender, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent("New Message");
                     readItems(sender);
-                    msgList.add(message);
+                    msgList.add("S "+message);
                     writeItems(sender);
                     sendBroadcast(intent);
                 }
@@ -281,12 +281,14 @@ public class Welcome_Screen extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        unregisterReceiver(mReceiver);
         if (mBound) {
+            unregisterReceiver(mReceiver);
             unbindService(mConnection);
             mBound = false;
         }
         dataHolder.resetWifi();
+        onDestroy();
+        System.exit(0);
     }
 
     @Override

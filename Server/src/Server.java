@@ -15,7 +15,7 @@ public class Server {
     private static String message;
     private static Map<String, User> usermap = new HashMap<String, User>();
     private static Map<String, Station> stationsmap = new HashMap<String, Station>();
-
+    private static ArrayList<Trajectory> trajectorymap= new ArrayList<Trajectory>();
 
     public static void main(String[] args) {
         try {
@@ -87,6 +87,14 @@ public class Server {
                         }
                         sendMessageToClient(aux);
                         break;
+                    case "Station_Coord":
+                        String stc = "";
+                        for(String key: stationsmap.keySet()) {
+                            if(stationsmap.get(key).getAvailableBikes()>0)
+                                stc += stationsmap.get(key).getLocation()+";"+stationsmap.get(key).getLatitude() +";"+ stationsmap.get(key).getLongitude()+",";
+                        }
+                        sendMessageToClient(stc);
+                        break;
                     case "Station_Description":
                         System.out.println("Method: "+array[0]+" Station: "+array[1]);
                         sendMessageToClient(""+stationsmap.get(array[1]).getAvailableBikes()+","+stationsmap.get(array[1]).getLatitude()+","+stationsmap.get(array[1]).getLongitude()+","+stationsmap.get(array[1]).getFeedback());
@@ -100,6 +108,28 @@ public class Server {
                     	else
                             sendMessageToClient("This station doesn't have any bike available!");
                     	break;
+                    case "Asking_Trajectories":
+                        System.out.println("Method: "+array[0]+" Username: "+array[1]);
+                        String aux2="";
+                        for(int i=0;i<trajectorymap.size();i++){                     
+                            if(trajectorymap.get(i).getUsername().equals(array[1])){ 
+                                aux2=aux2+trajectorymap.get(i).getName()+",";
+                                System.out.println(aux2);
+                            }
+                            if (aux2.equals("")){
+                                aux2="Not_available_trajectories";
+                            }
+                        }
+                        sendMessageToClient(aux2);
+                        break;
+                    case "Asking_Trajectory_Info":
+                        System.out.println("Method: "+array[0]+" Trajectory: "+array[1]);
+                        for(int i=0;i<trajectorymap.size();i++){
+                            if(trajectorymap.get(i).getName().equals(array[1])){
+                                sendMessageToClient(""+trajectorymap.get(i).getStartingPoint()+","+trajectorymap.get(i).getEndPoint()+","+trajectorymap.get(i).getDistance()+","+trajectorymap.get(i).getDate()+","+trajectorymap.get(i).getTime());
+                            }
+                        }            
+                        break;
                 }
             } catch (IOException ex) {
             	ex.printStackTrace();
@@ -134,6 +164,8 @@ public class Server {
         
         usermap.put("bernardo", new User("bernardo", "bernardo@gmail.com","13"));
         usermap.put("vasco", new User("vasco", "bernardo@gmail.com","13"));
-
+        
+        trajectorymap.add(new Trajectory("Cascais Grand Prix","bernardo","Cascais","Parede","20km","08-04-2016 11:51:18","00h:50m:33s"));
+        trajectorymap.add(new Trajectory("Cascais Grand Prix2","bernardo","Carcavelos","Parede","17km","09-04-2016 11:51:18","00h:42m:27s"));
     }
 }

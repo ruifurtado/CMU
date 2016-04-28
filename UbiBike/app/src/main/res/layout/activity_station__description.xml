@@ -91,20 +91,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="See On The Map"
-        android:id="@+id/see_onMap"
-        android:layout_marginTop="69dp"
-        android:layout_below="@+id/feedback"
-        android:layout_toStartOf="@+id/bikes_front" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Book a Bike"
         android:id="@+id/book_bike"
-        android:layout_marginEnd="38dp"
-        android:layout_alignTop="@+id/see_onMap"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp" />
 
 
 </RelativeLayout>

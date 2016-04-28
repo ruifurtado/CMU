@@ -10,13 +10,14 @@
     tools:context="pt.ulisboa.tecnico.cmov.ubibike.Read_Trajectory">
 
     <TextView
-        android:layout_marginTop="50px"
+        android:layout_marginTop="50dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="StartingPoint: "
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_alignParentStart="true"
-        android:id="@+id/startingPoint" />
+        android:id="@+id/startingPoint"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
         android:text="EndPoint:"
         android:layout_height="wrap_content"
         android:id="@+id/endPoint"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/startingPoint"
         android:layout_alignParentStart="true" />
 
@@ -34,7 +35,7 @@
         android:text="Distance:"
         android:layout_height="wrap_content"
         android:id="@+id/distance"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/endPoint"
         android:layout_alignParentStart="true" />
 
@@ -44,7 +45,7 @@
         android:text="Date:"
         android:layout_height="wrap_content"
         android:id="@+id/date"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/distance"
         android:layout_alignParentStart="true" />
 
@@ -84,5 +85,40 @@
         android:layout_alignBottom="@+id/date"
         android:layout_alignStart="@+id/dist"
         android:textColor="#ff000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/trajectoryName"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Consumed Time:"
+        android:id="@+id/consumed_time"
+        android:layout_below="@+id/date"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/cTime"
+        android:textColor="#ff000000"
+        android:layout_alignTop="@+id/consumed_time"
+        android:layout_alignStart="@+id/date_front" />
+
+    <fragment
+        android:layout_width="1200dp"
+        android:layout_height="300dp"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/mapsFragment"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

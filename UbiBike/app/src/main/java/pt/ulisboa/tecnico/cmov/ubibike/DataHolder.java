@@ -11,7 +11,7 @@ public class DataHolder {
     private SimWifiP2pManager.Channel mChannel = null;
     private static final DataHolder holder = new DataHolder();
     private int flagWifi=0;
-
+    private int flagReadFile=0;
 
     public void setFlagWifi(){this.flagWifi=1;}
 
@@ -28,6 +28,10 @@ public class DataHolder {
         this.mManager = manager;
         this.mChannel = channel;
     }
+
+    public void setFlagReadFile(){this.flagReadFile=1;}
+
+    public int getFlagReadFile(){return this.flagReadFile;}
 
     public static DataHolder getInstance() {return holder;}
 }

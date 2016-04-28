@@ -54,22 +54,6 @@ public class Station_Description extends AppCompatActivity {
                 updateStationInformation();
             }
         });
-
-        //Button to go to GoogleMaps activity to see the Station on the map
-        Button see_onMap=(Button)findViewById(R.id.see_onMap);
-        assert see_onMap != null;
-        see_onMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goMaps_Station = new Intent(v.getContext(), GoogleMaps_Station.class);
-
-                goMaps_Station.putExtra("Username",intent.getStringExtra("Username"));
-                goMaps_Station.putExtra("Station",intent.getStringExtra("Station"));
-                goMaps_Station.putExtra("lat", Double.parseDouble(stationInformation[1]));
-                goMaps_Station.putExtra("long", Double.parseDouble(stationInformation[2]));
-                startActivity(goMaps_Station);
-            }
-        });
     }
 
     Runnable server = new Runnable() {

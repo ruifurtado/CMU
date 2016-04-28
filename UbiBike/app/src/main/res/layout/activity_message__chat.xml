@@ -1,56 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="pt.ulisboa.tecnico.cmov.ubibike.Message_Chat">
+    android:background="#efefef"
+    android:orientation="vertical"
+    tools:context=".Message_Chat">
 
     <ListView
-        android:id="@+id/messagesContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="false"
-        android:layout_marginBottom="50dp"
-        android:layout_below="@+id/meLbl"
-        android:layout_marginTop="10dp"
-        android:listSelector="@android:color/transparent"
-        android:transcriptMode="alwaysScroll"
-        android:divider="@null" />
-    <TextView
-        android:id="@+id/friendLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:textSize="20dp" />
-    <TextView
-        android:id="@+id/meLbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:text="MySelf"
-        android:singleLine="false"
-        android:textSize="20dp" />
-    <Button
-        android:id="@+id/chatSendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="Send MSG" />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/messageEdit"
-        android:layout_alignParentBottom="true"
-        android:hint="type message"
-        android:autoText="true"
-        android:imeOptions="actionDone"
-        android:layout_toLeftOf="@+id/chatSendButton"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/msgview"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:divider="@null"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"></ListView>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <EditText
+            android:id="@+id/msg"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2" />
+
+        <Button
+            android:id="@+id/send"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="Send" />
+
+    </LinearLayout>
+</LinearLayout>

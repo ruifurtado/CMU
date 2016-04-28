@@ -114,6 +114,7 @@ public class User_Home extends AppCompatActivity {
         super.onBackPressed();
         unregisterReceiver(broadcastReceiver);
         Intent backHome = new Intent(User_Home.this,Welcome_Screen.class);
+        backHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         backHome.putExtra("Logout","Logout");
         startActivity(backHome);
     }
