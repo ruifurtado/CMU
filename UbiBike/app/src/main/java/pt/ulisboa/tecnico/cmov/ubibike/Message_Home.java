@@ -40,6 +40,7 @@ public class Message_Home extends AppCompatActivity implements SimWifiP2pManager
         list.setAdapter(adapterItems);
 
         dataHolder=DataHolder.getInstance();
+
         mChannel=dataHolder.getmChannel();
         mManager=dataHolder.getmManager();
 

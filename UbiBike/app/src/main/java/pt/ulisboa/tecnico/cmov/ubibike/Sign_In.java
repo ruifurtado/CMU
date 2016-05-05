@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.ubibike;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -50,18 +51,22 @@ public class Sign_In extends AppCompatActivity {
                 password = password_input.getText().toString();
                 password_input.setText("");
 
-                //Code to ask to the server if the login input is correct and valid
-                //IMPORTANT: In this part of the code, the APP have to communicate with the server to check the input data of the login
-                messageFromServer=communicateWithServer();
-                if(messageFromServer.equals("1")){
-                    feedBackSignUp("Login Successfully");
-                    Intent goAttemp_login = new Intent(v.getContext(), User_Home.class);
-                    goAttemp_login.putExtra("Username", username);
-                    startActivity(goAttemp_login);
-                 }
-                else{
-                    feedBackSignUp(messageFromServer);
-                }
+                messageFromServer = communicateWithServer();
+                if (!messageFromServer.equals("IOException")) {
+
+                    if (messageFromServer.contains("1")) {
+                        String[] pointsUser = messageFromServer.split(" ");
+                        feedBackSignUp("Login Successfully");
+                        Intent goAttemp_login = new Intent(v.getContext(), User_Home.class);
+                        goAttemp_login.putExtra("Username", username);
+                        goAttemp_login.putExtra("Points", pointsUser[1]);
+                        goAttemp_login.putExtra("Points Sender", pointsUser[2]);
+                        goAttemp_login.putExtra("Points Receiver", pointsUser[3]);
+                        startActivity(goAttemp_login);
+                    } else
+                        feedBackSignUp(messageFromServer);
+                } else
+                    feedBackSignUp("Server Unreachable! Please Try Later!");
             }
         });
     }
@@ -88,6 +93,8 @@ public class Sign_In extends AppCompatActivity {
             } catch (UnknownHostException e){
                 e.printStackTrace();
             }catch(IOException e){
+                Log.d("Communicating Server","Server Unreachable! Please Try Later!");
+                messageFromServer="IOException";
                 e.printStackTrace();
             }
         }
@@ -113,6 +120,7 @@ public class Sign_In extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         super.onBackPressed();
+        DataHolder.getInstance().resetFlagSign_In();
         Intent backHome = new Intent(Sign_In.this,Welcome_Screen.class);
         startActivity(backHome);
     }

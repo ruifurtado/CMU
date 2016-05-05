@@ -12,7 +12,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
@@ -23,7 +22,6 @@ public class Search_User extends AppCompatActivity implements SimWifiP2pManager.
     private ListView itemsUsernames;
     private ArrayAdapter<String> itemsAdapter;
     private ArrayList<String> items;
-
     private DataHolder dataHolder;
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;

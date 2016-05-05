@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -88,20 +90,25 @@ public class Stations extends AppCompatActivity implements OnMapReadyCallback {
         message="Station_Coord";
         CommunicateWithServer();
         //[0] -> number of bikes available ; [1] -> latitude ; [2] -> longitude ; [3] -> feedback
-        String[] stations = messageFromServer.split(",");
-        array.clear();
-        final LatLng parede = new LatLng(38.693449,-9.355405);
-        for (int i = 0; i < stations.length; i++) {
-            array.add(stations[i]);
-            latlong = array.get(i).split(";");
-            lat = Double.parseDouble(latlong[1]);
-            longi = Double.parseDouble(latlong[2]);;
-            final LatLng location = new LatLng(lat,longi);
-            float zoomLevel = 12; //This goes up to 21
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(parede, zoomLevel));
-            mMap.addMarker(new MarkerOptions().position(location).title("Estação de "+latlong[0]));
-            mMap.setOnInfoWindowClickListener(getInfoWindowClickListener());
+        if(!messageFromServer.equals("IOException")) {
+            String[] stations = messageFromServer.split(",");
+            array.clear();
+            final LatLng parede = new LatLng(38.693449, -9.355405);
+            for (int i = 0; i < stations.length; i++) {
+                array.add(stations[i]);
+                latlong = array.get(i).split(";");
+                lat = Double.parseDouble(latlong[1]);
+                longi = Double.parseDouble(latlong[2]);
+                final LatLng location = new LatLng(lat, longi);
+                float zoomLevel = 12; //This goes up to 21
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(parede, zoomLevel));
+                mMap.addMarker(new MarkerOptions().position(location).title("Estação de " + latlong[0]));
+                mMap.setOnInfoWindowClickListener(getInfoWindowClickListener());
+            }
         }
+        else
+            Toast.makeText(this, "Server Unreachable! Please Try Later!", Toast.LENGTH_SHORT).show();
+
     }
 
     public GoogleMap.OnInfoWindowClickListener getInfoWindowClickListener()
@@ -139,6 +146,8 @@ public class Stations extends AppCompatActivity implements OnMapReadyCallback {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.d("Communicating Server","Server Unreachable! Please Try Later!");
+                messageFromServer="IOException";
                 e.printStackTrace();
             }
         }

@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -43,17 +42,13 @@ public class Welcome_Screen extends AppCompatActivity {
     private String method="Sign_Up";
     private String messageFromServer;
     private Thread t;
-
     private SimWifiP2pBroadcastReceiver mReceiver;
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
     private boolean mBound = false;
     private Messenger mService = null;
     private SimWifiP2pSocketServer mSrvSocket = null;
-
-    private DataHolder dataHolder;
     private ArrayList<String> msgList;
-    private int flagWifi=0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -70,9 +65,7 @@ public class Welcome_Screen extends AppCompatActivity {
             }
         }catch(NullPointerException e){}
 
-        dataHolder=DataHolder.getInstance();
-
-        if(dataHolder.getFlagWifi()==0) {
+        if(DataHolder.getInstance().getFlagWifi()==0) {
             // initialize the WDSim API
             SimWifiP2pSocketManager.Init(getApplicationContext());
             // register broadcast receiver
@@ -84,15 +77,13 @@ public class Welcome_Screen extends AppCompatActivity {
             mReceiver = new SimWifiP2pBroadcastReceiver(this);
             registerReceiver(mReceiver, filter);
             Intent intent_aux = new Intent(this, SimWifiP2pService.class);
-            //startService(intent);
             bindService(intent_aux, mConnection, Context.BIND_AUTO_CREATE);
             mBound = true;
             // spawn the chat server background task
             new IncommingCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-            dataHolder.setFlagWifi();
+            DataHolder.getInstance().setFlagWifi();
         }
-
 
         //Button to go to Sign In activity
         Button sign_in=(Button)findViewById(R.id.sign_in);
@@ -100,7 +91,7 @@ public class Welcome_Screen extends AppCompatActivity {
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataHolder.setmManager(mManager,mChannel);
+                DataHolder.getInstance().setmManager(mManager,mChannel);
                 Intent goSign_In = new Intent(v.getContext(), Sign_In.class);
                 startActivity(goSign_In);
             }
@@ -124,7 +115,6 @@ public class Welcome_Screen extends AppCompatActivity {
             username = data.getStringExtra("Username");
             email = data.getStringExtra("Email");
             password = data.getStringExtra("Password");
-            //IMPORTANT: In this part of the code, the APP have to communicate with the server to pass the new user, with all the data received
             String registerResult=communicateWithServer();
             Toast.makeText(this, registerResult, Toast.LENGTH_SHORT).show();
         }
@@ -157,13 +147,6 @@ public class Welcome_Screen extends AppCompatActivity {
         }
     };
 
-    private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //itemsAdapter.clear();
-            Toast.makeText(getBaseContext(), "Logout Successfully", Toast.LENGTH_SHORT).show();
-        }
-    };
 
     protected String communicateWithServer (){
         t=new Thread(server, "My Server");
@@ -219,6 +202,7 @@ public class Welcome_Screen extends AppCompatActivity {
             if(values[0]!=null) {
                 if(values[0].contains("Send_Points")){
                     String [] message = values[0].split(",");
+                    DataHolder.getInstance().updatePointsReceiver(Integer.parseInt(message[2]));
                     Toast.makeText(Welcome_Screen.this, "Received "+message[2]+" points from "+message[1], Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent("Points Received");
                     sendBroadcast(intent);
@@ -286,7 +270,7 @@ public class Welcome_Screen extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
-        dataHolder.resetWifi();
+        DataHolder.getInstance().resetWifi();
         onDestroy();
         System.exit(0);
     }

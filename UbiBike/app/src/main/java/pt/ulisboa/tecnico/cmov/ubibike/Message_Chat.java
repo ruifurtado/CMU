@@ -12,27 +12,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 
 public class Message_Chat extends AppCompatActivity {
 
     private static final String TAG = "Message_ChatActivity";
-
     private ChatArrayAdapter chatArrayAdapter;
     private ListView listView;
     private EditText chatText;
@@ -43,8 +36,6 @@ public class Message_Chat extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver= null;
     private String friendName;
     private ArrayList<String> msgList;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +57,6 @@ public class Message_Chat extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("New Message");
         broadcastReceiver = broadcastReceiver_create;
         registerReceiver(broadcastReceiver, filter);
-
 
         chatText = (EditText) findViewById(R.id.msg);
         chatText.setOnKeyListener(new View.OnKeyListener() {
@@ -107,12 +97,9 @@ public class Message_Chat extends AppCompatActivity {
         return true;
     }
 
-
     private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //itemsAdapter.clear();
-            //updateChatView();
             readItems(friendName);
         }
     };

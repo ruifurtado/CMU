@@ -51,7 +51,7 @@ public class Server {
                         System.out.println("Method: "+array[0]+" Username: "+array[1]+" Password: "+array[2]);
                     	if(usermap.containsKey(array[1])){
                     		if(usermap.get(array[1]).getPassword().equals(array[2])){
-                    			sendMessageToClient("1");
+                    			sendMessageToClient("1 "+usermap.get(array[1]).getAllPoints());
                     		}
                     		else
                         		sendMessageToClient("Invalid Password!");
@@ -61,23 +61,19 @@ public class Server {
                     	break;
                     case "Send_Points":
                         System.out.println("Method: "+array[0]+" Sender: "+array[1]+" Points: "+array[2]+" Receiver: "+array[3]);
-                        if (usermap.get(array[1]).canISendPoints(Integer.parseInt(array[2]))){
-                        	usermap.get(array[1]).sendPoints(Integer.parseInt(array[2]));
-                        	usermap.get(array[3]).receivePoints(Integer.parseInt(array[2]));
-                            sendMessageToClient("Points successfully sent to"+" "+array[3]);
-                        }
-                        else{
-                            sendMessageToClient("Not enough points to send!");
-                        } 
+                       	usermap.get(array[1]).sendPoints(Integer.parseInt(array[2]));
+                    	usermap.get(array[3]).receivePoints(Integer.parseInt(array[2]));
+                        sendMessageToClient("Points successfully updated");
                         break;
-                    case "Asking_Points":
+                    /*case "Asking_Points":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]);
                         sendMessageToClient(""+usermap.get(array[1]).getPoints());
-                        break;
-                    case "Asking_AllPoints":
+                        break;*/
+                    /*case "Asking_AllPoints":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]);
                         sendMessageToClient(""+usermap.get(array[1]).getAllPoints());
                         break;
+                       */
                     case "Asking_Stations":
                         System.out.println("Method: "+array[0]);
                         String aux="";

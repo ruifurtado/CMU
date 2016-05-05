@@ -21,7 +21,6 @@ public class Station_Description extends AppCompatActivity {
     private PrintWriter printwriter;
     private String message;
     private String serverIp="10.0.2.2";
-    private String username;
     private String messageFromServer;
     private Thread t;
     private Intent intent;

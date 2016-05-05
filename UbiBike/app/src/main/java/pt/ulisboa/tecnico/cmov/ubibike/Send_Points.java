@@ -17,28 +17,18 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 
 public class Send_Points extends AppCompatActivity {
 
     private TextView usernameTextView;
     private TextView points_sent;
     private String username;
-    private Socket client;
-    private PrintWriter printwriter;
     private String message;
-    private String serverIp="10.0.2.2";
-    private String messageFromServer;
-    private Thread t;
 
     private String ipDevice;
     private SimWifiP2pSocket mCliSocket = null;
     private BroadcastReceiver broadcastReceiver= null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +73,17 @@ public class Send_Points extends AppCompatActivity {
                 Integer point = 0;
                 try {
                     point = Integer.parseInt(points);
-                    message="Send_Points"+","+username+ ","+points+","+usernameTextView.getText();
-                    CommunicateWithServer();
-                    Toast.makeText(Send_Points.this, messageFromServer, Toast.LENGTH_SHORT).show();
+                    if(DataHolder.getInstance().getPoints() > 0) {
+                        message = "Send_Points" + "," + username + "," + points + "," + usernameTextView.getText();
+                        //update requests buffer
+                        DataHolder.getInstance().addRequest(message);
+                        DataHolder.getInstance().updatePointsSender(point);
+                        Toast.makeText(Send_Points.this, "Points successfully sent to "+usernameTextView.getText(), Toast.LENGTH_SHORT).show();
 
-                    new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,message);
+                        new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message);
+                    }
+                    else
+                        Toast.makeText(Send_Points.this, "You don't have enough points to send!", Toast.LENGTH_SHORT).show();
 
                 } catch(NumberFormatException e) {
                     Toast.makeText(Send_Points.this, "Write a valid amount of points", Toast.LENGTH_SHORT).show();
@@ -102,7 +98,6 @@ public class Send_Points extends AppCompatActivity {
     private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //itemsAdapter.clear();
             updateAllTextViews();
         }
     };
@@ -132,7 +127,6 @@ public class Send_Points extends AppCompatActivity {
         }
     }
 
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         //cycle to check if it's a result from the Search User activity
@@ -144,67 +138,29 @@ public class Send_Points extends AppCompatActivity {
         }
     }
 
-    Runnable server = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                client = new Socket(serverIp, 4444);  //connect to server
-                printwriter = new PrintWriter(client.getOutputStream(), true);
-                printwriter.write(message);  //write the message to output stream
-                printwriter.flush();
-                printwriter.close();
-                client.close();   //closing the connection
-
-                client = new Socket(serverIp, 4444);  //connect to server
-                // Get input buffer
-                BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                messageFromServer = br.readLine();
-                br.close();
-                client.close();   //closing the connection
-
-            } catch (UnknownHostException e){
-                e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-    };
-
-    protected void CommunicateWithServer (){
-        t=new Thread(server, "My Server");
-        t.start();
-        try {
-            t.join();
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
-    }
-
     public void updateAllTextViews(){
-        message="Asking_AllPoints"+","+username;
-        CommunicateWithServer();
-
         //[0] - total points ; [1] - total points send ; [2] - total points received
-        String [] allpoints=messageFromServer.split(" ");
 
         //To display the total amount of points that the user sent to friends
         points_sent= (TextView) findViewById(R.id.points2);
-        points_sent.setText(allpoints[0]);
+        points_sent.setText(""+DataHolder.getInstance().getPoints());
+
 
         //To display the total amount of points of the user
         points_sent= (TextView) findViewById(R.id.points_sent2);
-        points_sent.setText(allpoints[1]);
+        points_sent.setText(""+DataHolder.getInstance().getPointsSender());
+
 
         //To display the total amount of points of the user
         points_sent= (TextView) findViewById(R.id.points_received2);
-        points_sent.setText(allpoints[2]);
+        points_sent.setText(""+DataHolder.getInstance().getPointsReceiver());
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         unregisterReceiver(broadcastReceiver);
-        Intent backHome = new Intent(getApplicationContext(),User_Home.class);
+        Intent backHome = new Intent(Send_Points.this,User_Home.class);
         backHome.putExtra("Username", username);
         startActivity(backHome);
     }
