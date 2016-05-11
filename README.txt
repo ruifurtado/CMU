@@ -6,6 +6,15 @@ ESTE FICHEIRO DESCREVE TODAS AS TAREFAS E DUVIDAS RELACIONADAS COM O PROJECTO "U
 ##SHARING POINTS AND EXCHANGING TEXT MESSAGES --> WIFI DIRECT
 ##UBIBIKE APP INFORMS THE SERVER WHENEVER A BIKE ARRIVES OR LEAVES THE STATION 
 
+TO BE DONE:
+
+-> a cena dos dos pontos do servidor da parte da segurança
+-> mostrar a bike em uso
+-> bikes reservadas e n reservadas, diferenciar
+-> incrementar as bikes quando chegam das trajectorias e ver se foi uma reservada ou nao e consoante isso incrementar 
+-> robustez 
+
+
 ONGOIND TASK:
 
 	-> TRAJECTORIES AND ALL THE FEATURES (VASCO)
@@ -30,9 +39,9 @@ ONGOIND TASK:
 
 	- GET USER INFORMATION (including current score and trajectories) : CHECK 
  
-	- SEND NEW TRAJECTORY : POR FAZER
+	- SEND NEW TRAJECTORY : CHECK
 	
-	- SHOW MOST RECENT AND PAST TRAJECTORIES ON A MAP : POR FAZER
+	- SHOW MOST RECENT AND PAST TRAJECTORIES ON A MAP : CHECK
 	
 3. BETWEEN MOBILE DEVICES (using WIFI Direct)
 
@@ -42,9 +51,9 @@ ONGOIND TASK:
 
 4. BETWEEN  MOBILE DEVICES, BLE BEACONS, AND THE CENTRAL SERVER
 
-	- NOTIFY BIKE PICK UP : POR FAZER
+	- NOTIFY BIKE PICK UP : CHECK
 
-	- NOTIFY BIKE DROP OFF : POR FAZER
+	- NOTIFY BIKE DROP OFF : CHECK
 
 5. BETWEEN THE USER AND THE BIKE BEING USER (using BLE)
 
@@ -52,7 +61,7 @@ ONGOIND TASK:
 
 6. ADVANCED FEATURES
 
-	- SECURITY: POR FAZER
+	- SECURITY: CHECK
 		- MESSAGE REPLICATION AND TEMPERING 
 			EXAMPLE: if someone eavesdrops a message containing  points, it must be impossible to: i) resend the message multiple times to the same user or to different users, or ii)  tamper with the data in the message (for example, increase the number of points in the message)
 

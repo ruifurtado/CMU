@@ -1,37 +1,24 @@
+import java.util.ArrayList;
 
 public class Trajectory {
 
     private String username;
-    private String startingPoint;
-    private String endPoint;
+    private ArrayList<String> trajectoryPoints = new ArrayList<String>();
     private String distance;
     private String date;
-    private String name;
-    private String time;
+    private int earnedPoints;
+   
 
-    public Trajectory(String name, String username, String startingPoint, String endPoint, String distance, String date, String time){
-        this.name=name;
+    public Trajectory(String username, String distance, String date, ArrayList<String> trajectoryPoints, int points){
         this.username=username;
-        this.startingPoint=startingPoint;
-        this.endPoint=endPoint;
         this.distance=distance;
         this.date=date;
-        this.time=time;
+        this.trajectoryPoints=trajectoryPoints;
+        this.earnedPoints=points;
     }
-    public void setName (String name){
-        this.name=name;
-    }
-    public void setTime (String time){
-        this.time=time;
-    }
+
     public void setUsername (String username){
         this.username=username; 
-    }
-    public void setStartingPoint (String startingPoint){
-        this.startingPoint=startingPoint;
-    }
-    public void setEndPoint (String endPoint) {
-        this.endPoint = endPoint;
     }
     public void setDistance (String distance){
         this.distance=distance;
@@ -39,14 +26,14 @@ public class Trajectory {
     public void setDate (String date){
         this.date=date;
     }
-    public String getStartingPoint(){
-        return startingPoint;
+    public void setTrajectoryPoints (ArrayList<String> trajectoryPoints){
+        this.trajectoryPoints=trajectoryPoints;
+    }
+    public ArrayList<String> getTrajectoryPoints (){
+         return trajectoryPoints;
     }
     public String getUsername(){
         return username;
-    }
-    public String getEndPoint(){
-        return endPoint;
     }
     public String getDate(){
         return date;
@@ -54,10 +41,8 @@ public class Trajectory {
     public String getDistance(){
         return distance;
     }
-    public String getName(){
-        return name;
-    }
-    public String getTime(){
-        return time;
+    
+    public int getEarnedPoints(){
+    	return this.earnedPoints;
     }
 }

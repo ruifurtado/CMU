@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.ubibike;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,12 +12,16 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Read_Trajectory extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -30,6 +35,7 @@ public class Read_Trajectory extends AppCompatActivity implements OnMapReadyCall
     private Thread t;
     private GoogleMap map;
     private String info[];
+    private ArrayList<Double> trajectoryPoints =new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,31 +52,41 @@ public class Read_Trajectory extends AppCompatActivity implements OnMapReadyCall
         trajectory=intent.getStringExtra("Trajectory");
         title.setText(trajectory);
 
-        TextView startingPoint = (TextView) findViewById(R.id.sPoint);
-        TextView endPoint = (TextView) findViewById(R.id.ePoint);
+        TextView earnedPoints = (TextView) findViewById(R.id.ePoint);
         TextView distance = (TextView) findViewById(R.id.dist);
-        TextView dateText = (TextView) findViewById(R.id.date_front);
-        TextView time = (TextView) findViewById(R.id.cTime);
 
-        message="Asking_Trajectory_Info"+","+trajectory;
+
+        message="Asking_Trajectory_Info"+","+trajectory+","+username;
         CommunicateWithServer();
         info=messageFromServer.split(",");
-        startingPoint.setText(info[0]);
-        endPoint.setText(info[1]);
-        distance.setText(info[2]);
-        dateText.setText(info[3]);
-        time.setText(info[4]);
+        //startingPoint.setText(info[0]);
+        //endPoint.setText(info[1]);
+        distance.setText(info[0]+" KM");
+        earnedPoints.setText(info[2]);
+        String points="";
+        for (int i=3;i<info.length;i++) {
+            points =points+info[i]+",";
+        }
+        arrayCreator(points);
+        Log.d("ARRAY:",trajectoryPoints.toString());
 
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LatLng location = new LatLng(38.694996,-9.422548);
-        float zoomLevel = 14; //This goes up to 21
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
-        map.addMarker(new MarkerOptions().position(location).title("Marker in "+info[1]));
-        map.moveCamera(CameraUpdateFactory.newLatLng(location));
+        PolylineOptions rectOptions = new PolylineOptions();
+        for (int i=0;i<trajectoryPoints.size()-1;i++){
+            rectOptions.add(new LatLng(trajectoryPoints.get(i),trajectoryPoints.get(i+1)));
+            i++;
+        }
+        Polyline polyline=map.addPolyline(rectOptions);
+        //LatLng location = new LatLng(38.694996,-9.422548);
+        float zoomLevel = 13; //This goes up to 21
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(trajectoryPoints.get(0),trajectoryPoints.get(1)), zoomLevel));
+        map.addMarker(new MarkerOptions().position(new LatLng(trajectoryPoints.get(0),trajectoryPoints.get(1))).title("Starting Point"));
+        map.addMarker(new MarkerOptions().position(new LatLng(trajectoryPoints.get(trajectoryPoints.size()-2),trajectoryPoints.get(trajectoryPoints.size()-1))).title("End Point"));
+        //map.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
 
     Runnable server = new Runnable() {
@@ -108,6 +124,17 @@ public class Read_Trajectory extends AppCompatActivity implements OnMapReadyCall
             e.printStackTrace();
         }
     }
+
+    public void arrayCreator (String array){
+        String [] splitter=array.split(",");
+        for (int i=0;i<splitter.length;i++){
+            trajectoryPoints.add(Double.parseDouble(splitter[i]));
+        }
+
+
+
+    }
+
 
     @Override
     public void onBackPressed() {

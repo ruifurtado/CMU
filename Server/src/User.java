@@ -1,3 +1,15 @@
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
+
 public class User {
 
     private String username;
@@ -6,6 +18,8 @@ public class User {
     private int totalPoints;
     private int totalPointsSend;
     private int totalPointsReceived;
+    private PublicKey publicKey;
+    private HashMap<String, Integer> messageIDController;
 
     public User (String username, String email, String password){
         this.username=username;
@@ -14,8 +28,43 @@ public class User {
         this.totalPoints=20;
         this.totalPointsReceived=0;
         this.totalPointsSend=0;
+        com.sun.org.apache.xml.internal.security.Init.init();
+        this.messageIDController=new HashMap<String, Integer>();
     }
-
+    
+    public boolean checkIDSender(String sender, Integer id){
+    	if(this.messageIDController.containsKey(sender)){
+    		if(this.messageIDController.get(sender)>=id)
+    			return false;
+    		else{
+    			this.messageIDController.put(sender, id);
+    			return true;
+    		}
+    	}
+    	else{
+    		this.messageIDController.put(sender, id);
+    		return true;
+    	}
+    }
+    
+    public void setPublicKey(String key)
+    {
+    	try{
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+	        byte[] publicKeyBytes = Base64.decode(key.getBytes());
+	        KeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+	        PublicKey publicKey = keyFactory.generatePublic(keySpec);
+	    	this.publicKey=publicKey;
+		}
+		catch (NoSuchAlgorithmException | InvalidKeySpecException | Base64DecodingException e){
+			e.printStackTrace();
+		}
+    }
+    
+    public PublicKey getPublicKey(){
+    	return this.publicKey;
+    }
+    
     public String getUsername(){
         return username;
     }
@@ -26,6 +75,10 @@ public class User {
 
     public String getPassword(){
         return password;
+    }
+    
+    public void receivePointsTrajectory(int points){
+    	this.totalPoints+=points;
     }
     
     public int getPoints(){

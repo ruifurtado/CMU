@@ -4,7 +4,15 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.util.*;
+
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 
 public class Server {
 
@@ -33,6 +41,11 @@ public class Server {
                 inputStreamReader = new InputStreamReader(clientSocket.getInputStream());
                 bufferedReader = new BufferedReader(inputStreamReader); //get the client message
                 message = bufferedReader.readLine();
+                if(message.contains("PublicKey") || message.contains("Send_Points")){
+                	while(bufferedReader.ready()){
+                		message+=bufferedReader.readLine();
+                	}
+                }
                 String [] array = message.split(",");
                 inputStreamReader.close();
                 clientSocket.close();
@@ -61,14 +74,25 @@ public class Server {
                     	break;
                     case "Send_Points":
                         System.out.println("Method: "+array[0]+" Sender: "+array[1]+" Points: "+array[2]+" Receiver: "+array[3]);
-                       	usermap.get(array[1]).sendPoints(Integer.parseInt(array[2]));
-                    	usermap.get(array[3]).receivePoints(Integer.parseInt(array[2]));
-                        sendMessageToClient("Points successfully updated");
+                        String msgOriginal=array[0]+","+array[1]+","+array[2]+","+array[3]+","+array[4];
+                        if(checkMessageIDController(array[0],array[3],array[4])){
+	                        if(checkSignature(msgOriginal, array[5], array[1])){
+	                        	usermap.get(array[1]).sendPoints(Integer.parseInt(array[2]));
+	                        	usermap.get(array[3]).receivePoints(Integer.parseInt(array[2]));
+	                        	sendMessageToClient("Points successfully updated");
+	                        }
+	                        else
+	                        	sendMessageToClient("Message Corrupted!!!Worning!!!!");
+                        }
+                        else
+                        	sendMessageToClient("Message Corrupted!!!Worning!!!!");
+
                         break;
-                    /*case "Asking_Points":
+                    case "PublicKey":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]);
-                        sendMessageToClient(""+usermap.get(array[1]).getPoints());
-                        break;*/
+                        usermap.get(array[1]).setPublicKey(array[2]);
+                        sendMessageToClient("PublicKey Saved!");
+                        break;
                     /*case "Asking_AllPoints":
                         System.out.println("Method: "+array[0]+" Username: "+array[1]);
                         sendMessageToClient(""+usermap.get(array[1]).getAllPoints());
@@ -109,28 +133,60 @@ public class Server {
                         String aux2="";
                         for(int i=0;i<trajectorymap.size();i++){                     
                             if(trajectorymap.get(i).getUsername().equals(array[1])){ 
-                                aux2=aux2+trajectorymap.get(i).getName()+",";
-                                System.out.println(aux2);
+                                aux2=aux2+trajectorymap.get(i).getDate()+",";
                             }
                             if (aux2.equals("")){
-                                aux2="Not_available_trajectories";
+                                aux2="Not available trajectories";
                             }
                         }
                         sendMessageToClient(aux2);
                         break;
                     case "Asking_Trajectory_Info":
-                        System.out.println("Method: "+array[0]+" Trajectory: "+array[1]);
+                        System.out.println("Method: "+array[0]+" Trajectory: "+array[1]+" Username: "+array[2]);
                         for(int i=0;i<trajectorymap.size();i++){
-                            if(trajectorymap.get(i).getName().equals(array[1])){
-                                sendMessageToClient(""+trajectorymap.get(i).getStartingPoint()+","+trajectorymap.get(i).getEndPoint()+","+trajectorymap.get(i).getDistance()+","+trajectorymap.get(i).getDate()+","+trajectorymap.get(i).getTime());
+                            if(trajectorymap.get(i).getDate().equals(array[1]) && trajectorymap.get(i).getUsername().equals(array[2])){
+                                sendMessageToClient(""+trajectorymap.get(i).getDistance()+","+trajectorymap.get(i).getDate()+","+trajectorymap.get(i).getEarnedPoints()+","+trajectorymap.get(i).getTrajectoryPoints().toString().substring(1,trajectorymap.get(i).getTrajectoryPoints().toString().length()-1));
                             }
                         }            
+                        break;
+                    case "Trajectory_Sender":
+                        System.out.println("Method: "+array[0]+" Username: "+array[1]+ " Date: "+array[2]+" Distance: "+array[3]+" Points: "+array[4]);
+                        ArrayList <String> trajectoryPoints= new ArrayList<String>();
+                        for(int i=5;i<array.length;i++){
+                            trajectoryPoints.add(array[i]);
+                        }
+                        trajectorymap.add(new Trajectory(array[1],array[3],array[2],trajectoryPoints,Integer.parseInt(array[4])));
+                        usermap.get(array[1]).receivePointsTrajectory(Integer.parseInt(array[4]));
+                        sendMessageToClient("Trajectory Received!");
                         break;
                 }
             } catch (IOException ex) {
             	ex.printStackTrace();
             }
         }
+    }
+    
+    public static boolean checkMessageIDController(String sender, String receiver, String id){
+    	if(usermap.get(receiver).checkIDSender(sender,Integer.parseInt(id)))
+    		return true;
+    	else
+    		return false;
+    }
+    
+    public static boolean checkSignature(String original, String sign, String user){
+    	try{
+            Signature signature = Signature.getInstance("MD5withRSA");
+            signature.initVerify(usermap.get(user).getPublicKey());
+            signature.update(original.getBytes());
+            if(signature.verify(Base64.decode(sign.getBytes())))
+                return true;
+            return false;
+        }
+        catch (NoSuchAlgorithmException | Base64DecodingException | InvalidKeyException | SignatureException e){
+            System.out.println("DEU ERRO NO VERIFY");
+            e.printStackTrace();
+        }
+        return false;
     }
     
     public static void sendMessageToClient(String message){
@@ -151,17 +207,17 @@ public class Server {
     }
     
     public static void populate(){
-    	stationsmap.put("Cascais", new Station("Cascais",15,38.694996,-9.422548, "Excellent"));
-    	stationsmap.put("Parede", new Station("Parede",12,38.693449, -9.355405, "Very Good"));
-    	stationsmap.put("São João do Estoril", new Station("São João do Estoril",15,38.701810, -9.385989, "Excellent"));
-    	stationsmap.put("Carcavelos", new Station("Carcavelos",10,38.687955, -9.337342, "Very Good"));
-    	stationsmap.put("Oeiras", new Station("Oeiras",10,38.697165, -9.314658, "Very Good"));
-    	stationsmap.put("Paço de Arcos", new Station("Paço de Arcos",8 , 38.697081, -9.291610, "Good"));
+        stationsmap.put("Cascais", new Station("Cascais",15,38.70061,-9.41764, "Excellent"));
+        stationsmap.put("São João do Estoril", new Station("São João do Estoril",15,38.70275, -9.39199, "Excellent"));
+        stationsmap.put("Parede", new Station("Parede",12,38.68845, -9.36009, "Very Good"));
+        stationsmap.put("Carcavelos", new Station("Carcavelos",10,38.68085, -9.33621, "Very Good"));
+        stationsmap.put("Oeiras", new Station("Oeiras",10,38.68499, -9.31297, "Very Good"));
+        stationsmap.put("Paço de Arcos", new Station("Paço de Arcos",8 , 38.69118, -9.29657, "Good"));
         
         usermap.put("bernardo", new User("bernardo", "bernardo@gmail.com","13"));
         usermap.put("vasco", new User("vasco", "bernardo@gmail.com","13"));
         
-        trajectorymap.add(new Trajectory("Cascais Grand Prix","bernardo","Cascais","Parede","20km","08-04-2016 11:51:18","00h:50m:33s"));
-        trajectorymap.add(new Trajectory("Cascais Grand Prix2","bernardo","Carcavelos","Parede","17km","09-04-2016 11:51:18","00h:42m:27s"));
+        //trajectorymap.add(new Trajectory("Cascais Grand Prix","bernardo","Cascais","Parede","20km","08-04-2016 11:51:18","00h:50m:33s"));
+        //trajectorymap.add(new Trajectory("Cascais Grand Prix2","bernardo","Carcavelos","Parede","17km","09-04-2016 11:51:18","00h:42m:27s"));
     }
 }

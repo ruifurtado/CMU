@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.cmov.ubibike;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -54,20 +53,17 @@ public class Trajectories extends AppCompatActivity {
             public void onClick(View v) {
                 message="Asking_Trajectories"+","+username;
                 CommunicateWithServer();
-                if(!messageFromServer.equals("IOException")) {
-                    String msg = messageFromServer;
-                    if (msg.equals("Not_available_trajectories")) {
-                        Toast.makeText(Trajectories.this, "You don't have any trajectory! Do more exercise!!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        String[] trajectories = messageFromServer.split(",");
-                        adapterTrajectories.clear();
-                        for (int i = 0; i < trajectories.length; i++) {
-                            adapterTrajectories.insert(trajectories[i], 0);
-                        }
+                String msg=messageFromServer;
+                if(msg.equals("Not_available_trajectories")){
+                    Toast.makeText(Trajectories.this, "You don't have any trajectory! Do more exercise!!", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    String[] trajectories = messageFromServer.split(",");
+                    adapterTrajectories.clear();
+                    for (int i = 0; i < trajectories.length; i++) {
+                        adapterTrajectories.insert(trajectories[i], 0);
                     }
                 }
-                else
-                    feedBackSignUp("Server Unreachable! Please Try Later!");
             }
         });
         // Method to Select a users from the List and return
@@ -109,8 +105,6 @@ public class Trajectories extends AppCompatActivity {
             } catch (UnknownHostException e){
                 e.printStackTrace();
             }catch(IOException e){
-                Log.d("Communicating Server","Server Unreachable! Please Try Later!");
-                messageFromServer="IOException";
                 e.printStackTrace();
             }
         }
@@ -129,14 +123,8 @@ public class Trajectories extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent backHome = new Intent(Trajectories.this,User_Home.class);
+        Intent backHome = new Intent(getApplicationContext(),User_Home.class);
         backHome.putExtra("Username",username);
         startActivity(backHome);
-    }
-
-    //Method to provide feedBack of the operations of the activity
-    //NOTE: ".makeText" cannot be resolved in a onClick Method
-    protected void feedBackSignUp(String message){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

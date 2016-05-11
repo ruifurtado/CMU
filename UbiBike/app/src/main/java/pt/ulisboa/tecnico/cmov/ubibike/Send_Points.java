@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,6 +18,11 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
+
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 
 public class Send_Points extends AppCompatActivity {
@@ -74,13 +80,16 @@ public class Send_Points extends AppCompatActivity {
                 try {
                     point = Integer.parseInt(points);
                     if(DataHolder.getInstance().getPoints() > 0) {
-                        message = "Send_Points" + "," + username + "," + points + "," + usernameTextView.getText();
+                        message = "Send_Points" + "," + username + "," + points + "," + usernameTextView.getText()+ "," + ""+DataHolder.getInstance().getMessagePointsIDGenerator(""+usernameTextView.getText());
+                        String signature = generateSignature(message);
+                        String messageFinal=message+","+signature;
                         //update requests buffer
                         DataHolder.getInstance().addRequest(message);
                         DataHolder.getInstance().updatePointsSender(point);
                         Toast.makeText(Send_Points.this, "Points successfully sent to "+usernameTextView.getText(), Toast.LENGTH_SHORT).show();
 
-                        new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message);
+                        new SendCommTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, messageFinal);
+                        DataHolder.getInstance().incrementMessagePointsIDGenerator(""+usernameTextView.getText());
                     }
                     else
                         Toast.makeText(Send_Points.this, "You don't have enough points to send!", Toast.LENGTH_SHORT).show();
@@ -94,6 +103,24 @@ public class Send_Points extends AppCompatActivity {
             }
         });
     }
+
+    public String generateSignature(String messageOriginal){
+        String msgSigned = "";
+        try{
+            Signature signature = Signature.getInstance("MD5withRSA");
+            signature.initSign(DataHolder.getInstance().getPrivateKey());
+            signature.update(messageOriginal.getBytes());
+            byte[] msgSignedInBytes = signature.sign();
+            msgSigned = Base64.encodeToString(msgSignedInBytes, Base64.DEFAULT);
+            Log.d("Msg signed", msgSigned);
+        }
+        catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e){
+            Log.d("Stress", "no generate signature");
+            e.printStackTrace();
+        }
+        return msgSigned;
+    }
+
 
     private final BroadcastReceiver broadcastReceiver_create = new BroadcastReceiver() {
         @Override

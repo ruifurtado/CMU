@@ -180,6 +180,11 @@ public class Welcome_Screen extends AppCompatActivity {
                     try {
                         BufferedReader sockIn = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                         String st = sockIn.readLine();
+                        if(st.contains("Send_Points")){
+                            while(sockIn.ready()){
+                                st+=sockIn.readLine();
+                            }
+                        }
                         publishProgress(st);
                         sock.getOutputStream().write(("\n").getBytes());
                     } catch (IOException e) {
@@ -202,10 +207,21 @@ public class Welcome_Screen extends AppCompatActivity {
             if(values[0]!=null) {
                 if(values[0].contains("Send_Points")){
                     String [] message = values[0].split(",");
-                    DataHolder.getInstance().updatePointsReceiver(Integer.parseInt(message[2]));
-                    Toast.makeText(Welcome_Screen.this, "Received "+message[2]+" points from "+message[1], Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent("Points Received");
-                    sendBroadcast(intent);
+                    if(DataHolder.getInstance().getUsernameLogin().equals(message[3])){
+                        //if(message[4].equals(""+DataHolder.getInstance().getMessagePointsIDController(message[1]))) {
+                           // DataHolder.getInstance().incrementMessagePointsIDController(message[1]);
+                            DataHolder.getInstance().updatePointsReceiver(Integer.parseInt(message[2]));
+                            DataHolder.getInstance().addRequest(values[0]);
+                            Toast.makeText(Welcome_Screen.this, "Received " + message[2] + " points from " + message[1], Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent("Points Received");
+                            sendBroadcast(intent);
+                        //}
+                        //else
+                            //Log.d("Security", "I receive a duplicate message!");
+                    }
+                    else
+                        Log.d("Security", "I received a message that was a different user destination!");
+
                 }
                 else {
                     String sender = values[0].substring(0, values[0].indexOf(" "));

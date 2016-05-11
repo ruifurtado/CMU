@@ -1,6 +1,14 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 
 /**
@@ -18,6 +26,95 @@ public class DataHolder {
     private int pointsReceiver;
     private ArrayList<String> bufferRequest = new ArrayList<>();
     private boolean isThreadBufferActive =false;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
+    private int peersChanged=0;
+    private boolean stationPastState = false;
+    private boolean bikePastState = false;
+
+    public boolean isStationPastState() {
+        return stationPastState;
+    }
+
+    public void setStationPastState(boolean stationPastState) {
+        this.stationPastState = stationPastState;
+    }
+
+    public boolean isBikePastState() {
+        return bikePastState;
+    }
+
+    public void setBikePastState(boolean bikePastState) {
+        this.bikePastState = bikePastState;
+    }
+
+
+    public void generateKeys(){
+        try {
+            //initialize key generator
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(1024);
+            //generate key pair
+            KeyPair keyPair = keyGen.generateKeyPair();
+            this.privateKey = keyPair.getPrivate();
+            this.publicKey = keyPair.getPublic();
+        }
+        catch (NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+    }
+
+    public PublicKey  getPublickey(){return this.publicKey;}
+    public PrivateKey getPrivateKey(){return this.privateKey;}
+
+
+    private Map<String, Integer> messagePointsIDGenerator = new HashMap<>();
+    private Map<String, Integer> messagePointsIDControler = new HashMap<>();
+    private String usernameLogin;
+
+    public void setUsernameLogin(String username){this.usernameLogin=username;}
+
+    public String getUsernameLogin(){return this.usernameLogin;}
+
+    public Integer getMessagePointsIDGenerator(String key){
+        if(this.messagePointsIDGenerator.containsKey(key))
+            return this.messagePointsIDGenerator.get(key);
+        else{
+            this.messagePointsIDGenerator.put(key,1);
+            return this.messagePointsIDGenerator.get(key);
+        }
+    }
+
+    public void incrementMessagePointsIDGenerator(String key){
+        this.messagePointsIDGenerator.put(key,this.messagePointsIDGenerator.get(key)+1);
+    }
+
+    public Integer getMessagePointsIDController(String key){
+        if(this.messagePointsIDControler.containsKey(key))
+            return this.messagePointsIDControler.get(key);
+        else{
+            this.messagePointsIDControler.put(key,1);
+            return this.messagePointsIDControler.get(key);
+        }
+    }
+
+    public void incrementMessagePointsIDController(String key){
+        this.messagePointsIDControler.put(key,this.messagePointsIDControler.get(key)+1);
+    }
+
+    public void setPeersChanged (){
+        this.peersChanged=1;
+    }
+
+    public void resetPeersChenged (){
+        this.peersChanged=0;
+    }
+
+    public int getPeersChanged(){
+        return this.peersChanged;
+    }
+
+
 
     public boolean getFlagBuffer(){return this.isThreadBufferActive;}
 
@@ -59,6 +156,10 @@ public class DataHolder {
 
     public void setPointsReceiver(int pointsServer){
         this.pointsReceiver=pointsServer;}
+
+    public void updatePoints(int points){
+        this.points+=points;
+    }
 
     public void updatePointsSender(int pointsServer){
         //int total_points= Integer.parseInt(this.points)-Integer.parseInt(pointsServer);
